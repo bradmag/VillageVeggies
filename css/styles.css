@@ -1,0 +1,75 @@
+:root {
+    --white: #ffffff;
+    --light-mint: #f0f9f4;
+    --nyanza: #d8f3dcff;
+    --celadon: #b7e4c7ff;
+    --celadon-2: #95d5b2ff;
+    --mint: #74c69dff;
+    --mint-2: #52b788ff;
+    --sea-green: #40916cff;
+    --dartmouth-green: #2d6a4fff;
+    --brunswick-green: #1b4332ff;
+    --dark-green: #081c15ff;
+    --black: #000000;
+    --gold: #f3ef33;
+    --gold2: #ffd700;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+        sans-serif;
+    background: var(--white);
+}
+
+
+.site-header {
+    position: sticky;
+    top: 0;
+    background: var(--celadon);
+    border-bottom: .2rem solid var(--gold);
+    z-index: 10;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+}
+
+
+.logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--sea-green);
+    text-decoration: none;
+}
+
+.nav {
+    list-style: none;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.nav a {
+    color: var(--sea-green);
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+}
+
+.nav a:hover {
+    background: #f3f4f6;
+}
