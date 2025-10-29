@@ -13,7 +13,6 @@
 
   <body>
     <header class="header">
-      <!-- <p>Site Header</p> -->
       <div class="header-inner">
         <a class="header-logo" href="/index.html">VillageVeggies</a>
         <nav aria-label="Primary">
@@ -25,57 +24,117 @@
       </div>
     </header>
     <main id="main">
-      <section class="hero">
-        <div class="hero-inner">
-          <div class="hero-content">
-            <div class="auth-tabs" role="tablist" aria-label="Authentication">
-              <button
-                class="tab-button active"
-                id="tab-login"
-                role="tab"
-                aria-selected="true"
-                aria-controls="panel-login"
-                tabindex="0"
-              >
-                Login
-              </button>
-              <button
-                class="tab-button"
-                id="tab-register"
-                role="tab"
-                aria-selected="false"
-                aria-controls="panel-register"
-                tabindex="-1"
-              >
-                Register
-              </button>
-            </div>
+      <div class="auth-container">
+        <div class="auth-tabs">
+          <button class="tab-button active" data-tab="login">Login</button>
+          <button class="tab-button" data-tab="register">Register</button>
+        </div>
 
-            <section
-              class="tab-panel"
-              id="login-form"
-              role="tabpanel"
-              aria-labelledby="tab-login"
-            >
-              <form action="login">
-                <p>Login form</p>
-              </form>
-            </section>
-
-            <section
-              class="tab-panel"
-              id="register-form"
-              role="tabpanel"
-              aria-labelledby="tab-register"
-              hidden
-            >
-              <form action="register">
-                <p>Register form</p>
-              </form>
-            </section>
+        <div class="tab-content">
+          <div id="login-tab" class="tab-panel active">
+            <form id="loginForm" class="auth-form">
+              <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" name="email" required />
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <a href="#" class="forgot-password">Forgot my password</a>
+              </div>
+              <button type="submit" class="auth-button">Login</button>
+            </form>
+          </div>
+          <div id="register-tab" class="tab-panel">
+            <form id="registerForm" class="auth-form">
+              <div class="form-group">
+                <label for="register-email">Email</label>
+                <input
+                  type="email"
+                  id="register-email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                />
+                <p class="error" data-for="email"></p>
+              </div>
+              <div class="form-group">
+                <label for="register-password">Password</label>
+                <input
+                  type="password"
+                  id="register-password"
+                  name="password"
+                  minlength="8"
+                  autocomplete="new-password"
+                  required
+                />
+                <p class="error" data-for="password"></p>
+              </div>
+              <div class="form-group">
+                <label for="confirm-Password">Verify Password</label>
+                <input
+                  type="password"
+                  id="confirm-Password"
+                  name="confirmPassword"
+                  minlength="8"
+                  autocomplete="new-password"
+                  required
+                />
+                <p class="error" data-for="confirmPassword"></p>
+              </div>
+              <div class="form-group">
+                <label for="register-name">Name</label>
+                <input type="text" id="register-name" name="name" required />
+                <p class="error" data-for="name"></p>
+              </div>
+              <div class="form-group">
+                <label for="register-zip">ZIP Code</label>
+                <input
+                  type="text"
+                  id="register-zip"
+                  name="zip"
+                  inputmode="numeric"
+                  pattern="^\d{5}$"
+                  autocomplete="postal-code"
+                  required
+                />
+                <p class="error" data-for="zip"></p>
+              </div>
+              <div class="form-group">
+                <label for="register-blurb">About You</label>
+                <textarea
+                  id="register-blurb"
+                  name="blurb"
+                  rows="3"
+                  placeholder="Tell us a bit about yourself..."
+                  maxlength="280"
+                ></textarea>
+                <p class="error" data-for="blurb"></p>
+              </div>
+              <div class="form-group">
+                <label for="register-contact">Contact Info</label>
+                <input
+                  type="text"
+                  id="register-contact"
+                  name="contact"
+                  placeholder="How should customers reach you? (phone, email, etc.)"
+                  autocomplete="tel email"
+                  required
+                />
+                <p class="error" data-for="contact"></p>
+              </div>
+              <button type="submit" class="auth-button">Register</button>
+            </form>
           </div>
         </div>
-      </section>
+      </div>
     </main>
     <footer class="site-footer">
       <div class="footer-inner">

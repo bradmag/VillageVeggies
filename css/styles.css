@@ -32,6 +32,14 @@ body {
     line-height: 1.5;
     color: #1f2937;
     background: #ffffff;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+    display: block;
 }
 
 .btn {
@@ -90,7 +98,8 @@ body {
     align-items: center;
 }
 
-.header-inner a, .hero-inner a {
+.header-inner a,
+.hero-inner a {
     color: var(--brunswick-green);
     text-decoration: none;
     padding: 0.5rem 0.75rem;
@@ -98,7 +107,8 @@ body {
     border: 2px solid var(--brunswick-green);
 }
 
-.header-inner a:hover, .hero-inner a:hover {
+.header-inner a:hover,
+.hero-inner a:hover {
     background: var(--white);
 }
 
@@ -219,6 +229,7 @@ body {
 .site-footer {
     border-top: .2rem solid var(--gold);
     background: var(--celadon);
+    margin-top: auto;
 }
 
 .footer-inner {
@@ -229,11 +240,24 @@ body {
     padding: 1rem 1rem;
 }
 
+.auth-container {
+  background-color: var(--nyanza);
+  margin: 2rem auto;
+  padding: 2rem;
+  max-width: 500px;
+  border-radius: 10px;
+  border: 3px solid var(--gold);
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--celadon);
+}
+
 .tab-button {
   flex: 1;
-  padding-top: 1rem;
-  padding-right: 5rem;
-  padding-left: 5rem;
+  padding: 1rem;
   background: none;
   border: none;
   font-size: 1rem;
@@ -245,4 +269,74 @@ body {
 .tab-button.active {
   color: var(--sea-green);
   border-bottom-color: var(--sea-green);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--dark-green);
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--celadon);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--sea-green);
+}
+
+.forgot-password {
+  color: var(--sea-green);
+  text-decoration: none;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-button {
+  background-color: var(--sea-green);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.auth-button:hover {
+  background-color: var(--dartmouth-green);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
