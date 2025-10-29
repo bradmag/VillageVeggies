@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>VillageVeggies - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="VillageVeggies, your source for fresh and organic vegetables gown by your neighbors."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <!-- <p>Site Header</p> -->
+      <div class="header-inner">
+        <a class="header-logo" href="/index.html">VillageVeggies</a>
+        <nav aria-label="Primary">
+          <ul class="nav">
+            <li><a href="/auth.html">Login</a></li>
+            <li><a href="/funding.html">Support The Movement</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-content">
+            <div class="auth-tabs" role="tablist" aria-label="Authentication">
+              <button
+                class="tab-button active"
+                id="tab-login"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-login"
+                tabindex="0"
+              >
+                Login
+              </button>
+              <button
+                class="tab-button"
+                id="tab-register"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-register"
+                tabindex="-1"
+              >
+                Register
+              </button>
+            </div>
+
+            <section
+              class="tab-panel"
+              id="login-form"
+              role="tabpanel"
+              aria-labelledby="tab-login"
+            >
+              <form action="login">
+                <p>Login form</p>
+              </form>
+            </section>
+
+            <section
+              class="tab-panel"
+              id="register-form"
+              role="tabpanel"
+              aria-labelledby="tab-register"
+              hidden
+            >
+              <form action="register">
+                <p>Register form</p>
+              </form>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <small>© <span id="year"></span> VillageVeggies</small>
+      </div>
+    </footer>
+    <script src="js/auth.js" defer></script>
+  </body>
+</html>
