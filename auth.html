@@ -25,13 +25,36 @@
     </header>
     <main id="main">
       <div class="auth-container">
-        <div class="auth-tabs">
-          <button class="tab-button active" data-tab="login">Login</button>
-          <button class="tab-button" data-tab="register">Register</button>
+        <div class="auth-tabs" role="tablist" aria-label="Authentication">
+          <button
+            class="tab-button active"
+            id="tab-login"
+            role="tab"
+            aria-selected="true"
+            aria-controls="login-form"
+            tabindex="0"
+          >
+            Login
+          </button>
+          <button
+            class="tab-button"
+            id="tab-register"
+            role="tab"
+            aria-selected="false"
+            aria-controls="register-form"
+            tabindex="-1"
+          >
+            Register
+          </button>
         </div>
 
         <div class="tab-content">
-          <div id="login-tab" class="tab-panel active">
+          <div
+            id="login-form"
+            class="tab-panel active"
+            role="tabpanel"
+            aria-labelledby="tab-login"
+          >
             <form id="loginForm" class="auth-form">
               <div class="form-group">
                 <label for="login-email">Email</label>
@@ -52,7 +75,12 @@
               <button type="submit" class="auth-button">Login</button>
             </form>
           </div>
-          <div id="register-tab" class="tab-panel">
+          <div
+            id="register-form"
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="tab-register"
+          >
             <form id="registerForm" class="auth-form">
               <div class="form-group">
                 <label for="register-email">Email</label>
