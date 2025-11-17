@@ -4,10 +4,22 @@ const panels = {
   "login-form": document.getElementById("login-form"),
   "register-form": document.getElementById("register-form"),
 };
-const formReg = document.getElementById("registerForm");
+const registerForm = document.getElementById("registerForm");
 
-if (formReg) {
-  formReg.addEventListener("submit", (e) => {
+const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const rePassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}/;
+const reZip = /^\d{5}(-\d{4})?$/;
+
+const $errors = document.getElementById('form-errors');
+function showErrors(errorMsg) {
+  $errors.textContent = errorMsg;
+  $errors.hidden = !errorMsg;
+}
+function clearErrors() {
+  showErrors(''); }
+
+if (registerForm) {
+  registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     // Here you can add your registration logic
     console.log("Front End Form Submitted");
@@ -19,6 +31,15 @@ if (formReg) {
     const zip = document.getElementById("register-zip").value.trim();
     const blurb = document.getElementById("register-blurb").value.trim();
     const contact = document.getElementById("register-contact").value.trim();
+
+    if (!name) return showErrors("Please enter your name.");
+    if (!reEmail.test(email)) return showError('Please enter a valid email address.');
+    if (!rePassword.test(password)) return showErrors("Password must be at least 8 characters long and include uppercase, lowercase, and special character.");
+    if (password !== confirm) return showErrors("Passwords do not match.");
+    if (!reZip.test(zip)) return showErrors("Please enter a valid ZIP code (5 digits or AIP+4).");
+
+    clearErrors();
+    console.log('Front End Validation Passed!');
   });
 }
 
