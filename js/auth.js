@@ -4,6 +4,16 @@ const panels = {
   'login-form': document.getElementById('login-form'),
   'register-form': document.getElementById('register-form')
 };
+const formReg = document.getElementById('registerForm');
+
+if (formReg) {
+  formReg.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Here you can add your registration logic
+    console.log('Front End Form Submitted');
+  });
+}
+
 
 function activateTab(tabEl) {
   // 1) Update tabs
