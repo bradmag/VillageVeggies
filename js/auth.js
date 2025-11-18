@@ -11,36 +11,58 @@ const rePassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}/;
 const reZip = /^\d{5}(-\d{4})?$/;
 
 const $errors = document.getElementById('form-errors');
-function showErrors(errorMsg) {
+
+function showError(errorMsg) {
   $errors.textContent = errorMsg;
   $errors.hidden = !errorMsg;
 }
-function clearErrors() {
-  showErrors(''); }
+function clearErrors() { showError(''); }
 
 if (registerForm) {
-  registerForm.addEventListener("submit", (e) => {
+  registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     // Here you can add your registration logic
     console.log("Front End Form Submitted");
+    clearErrors();
 
     const email = document.getElementById("register-email").value.trim();
-    const password = document.getElementById("register-password").value.trim();
-    const confirm = document.getElementById("confirm-password").value.trim();
+    const password = document.getElementById("register-password").value;
+    const confirm = document.getElementById("confirm-password").value;
     const name = document.getElementById("register-name").value.trim();
     const zip = document.getElementById("register-zip").value.trim();
     const blurb = document.getElementById("register-blurb").value.trim();
     const contact = document.getElementById("register-contact").value.trim();
 
-    if (!name) return showErrors("Please enter your name.");
+    if (!name) return showError("Please enter your name.");
     if (!reEmail.test(email)) return showError('Please enter a valid email address.');
-    if (!rePassword.test(password)) return showErrors("Password must be at least 8 characters long and include uppercase, lowercase, and special character.");
-    if (password !== confirm) return showErrors("Passwords do not match.");
-    if (!reZip.test(zip)) return showErrors("Please enter a valid ZIP code (5 digits or AIP+4).");
+    if (!rePassword.test(password)) return showError("Password must be at least 8 characters long and include uppercase, lowercase, and special character.");
+    if (password !== confirm) return showError("Passwords do not match.");
+    if (!reZip.test(zip)) return showError("Please enter a valid ZIP code (5 digits or ZIP+4).");
 
     clearErrors();
-    console.log('Front End Validation Passed!');
-  });
+    const data = { email, password, name, zip, blurb, contact };
+    console.log("Front End Validation Passed! Sending Data:", data);
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      showError(`Registration failed: ${error}`);
+      return;
+    }
+
+    const result = await response.json();
+    console.log('Sucess:', result);
+    window.location.href = '/auth.html';
+    } catch (error) {
+      showError(`An error occurred: ${error.message}`);
+    }
+  }); 
 }
 
 
