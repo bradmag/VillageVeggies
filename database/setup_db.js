@@ -7,7 +7,10 @@ const { Client } = require("pg");
 // For MVP, hardcode the connection info
 const DB_NAME = "villageveggies";
 const DB_USER = "postgres";
+
+// Don't forget to set your actual password here and change back before committing
 const DB_PASSWORD = "your_password_here";
+
 const DB_HOST = "127.0.0.1";
 const DB_PORT = 5432;
 
