@@ -24,6 +24,8 @@ async function setupDatabase() {
         port: DB_PORT,
     });
 
+    await client.connect();
+
     const dbExistsQuery = `SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'`;
     const result = await client.query(dbExistsQuery);
 
@@ -57,11 +59,12 @@ async function createTables() {
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash NOT NULL,
+        password_hash TEXT NOT NULL,
         name VARCHAR(255) NOT NULL,
         zip INT NOT NULL,
         blurb TEXT,
-        contact TEXT,
+        contact VARCHAR(120),
+        is_admin BOOLEAN DEFAULT FALSE,
         created_at DATE DEFAULT CURRENT_DATE
     );`;
 await client.query(createUsersTableQuery);
