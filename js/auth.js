@@ -44,7 +44,7 @@ if (registerForm) {
     console.log("Front End Validation Passed! Sending Data:", data);
 
     try {
-      const response = await fetch('/api/register', {
+      const response = await fetch('/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

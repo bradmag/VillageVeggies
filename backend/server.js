@@ -23,10 +23,8 @@ const pool = new Pool({
 })
 
 
-// TODO: Finish the Registration Endpoint
-
-// // Register endpoint
-app.post('/api/register', async (req, res) => {
+// Register endpoint
+app.post('/auth/register', async (req, res) => {
     // Extract user details from the JSON request body
     const { email, password, name, zip, blurb, contact } = req.body;
 
