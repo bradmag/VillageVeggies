@@ -60,9 +60,9 @@ app.post('/auth/register', async (req, res) => {
         console.error(err);
 
         if (err.code === '23505') { // Unique violation error code
-            res.status(409).send('Email already registered');
+            return res.status(409).send('Email already registered');
         }
 
-        res.status(500).send('Registration failed');
+        return res.status(500).send('Registration failed');
     }
 });

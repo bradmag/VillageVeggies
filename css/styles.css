@@ -350,3 +350,45 @@ main {
   border-radius: 10px;
   font-size: 0.95rem;
 }
+
+.profile {
+    background: var(--nyanza);
+    margin: 2rem auto;
+    padding: 1rem 1rem;
+    max-width: 1400px;
+    border-radius: 10px;
+    border: 3px solid var(--gold);
+    text-align: center;
+}
+
+.profile-inner {
+    display: grid;
+    align-items: center;
+    min-height: 48vh;
+}
+
+.profile h1 {
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard {
+    background: var(--nyanza);
+    margin: 2rem auto;
+    padding: 1rem 1rem;
+    max-width: 1400px;
+    border-radius: 10px;
+    border: 3px solid var(--gold);
+    text-align: center;
+}
+
+.dashboard-inner {
+    display: grid;
+    align-items: center;
+    min-height: 48vh;
+}
+
+.dashboard h1 {
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    margin-bottom: 0.5rem;
+}

@@ -58,7 +58,7 @@ if (registerForm) {
 
     const result = await response.json();
     console.log('Sucess:', result);
-    window.location.href = '/auth.html';
+    window.location.href = '/auth.html?mode=login';
     } catch (error) {
       showError(`An error occurred: ${error.message}`);
     }
