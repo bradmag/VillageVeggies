@@ -5,6 +5,7 @@ const panels = {
   "register-form": document.getElementById("register-form"),
 };
 const registerForm = document.getElementById("registerForm");
+const loginForm = document.getElementById("loginForm");
 
 const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const rePassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}/;
@@ -18,6 +19,8 @@ function showError(errorMsg) {
 }
 function clearErrors() { showError(''); }
 
+
+// ---- Register Form Submission ----
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -64,6 +67,47 @@ if (registerForm) {
     }
   }); 
 }
+
+// ---- Login Form Submission ----
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault(); 
+    console.log("Login Form Submitted");
+
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+    const errorE1 = document.getElementById("login-error");
+
+    errorE1.textContent = '';
+
+    if (!email || !passqword) {
+      errorE1.textContent = 'Please enter both email and password.';
+      return;
+    }
+
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        errorE1.textContent = `Login failed: ${text}`;
+        return;
+      }
+
+      // successful login
+      window.location.href = "/profile.html";
+
+    } catch (error) {
+      errorE1.textContent = `An error occurred: ${error.message}`;
+      console.error('Error during login:', error);
+    }
+  });
+}
+
 
 
 function activateTab(tabEl) {
