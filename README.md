@@ -1,49 +1,220 @@
 # VillageVeggies
-A platform that allows backyard gardeners, urban growers, and small-scale farmers to list and sell their surplus produce directly to their neighbors.
 
-## Overview
-- Mission: Build a more human and sustainable future through education, innovation, and local food systems.
-- Vision: A world where communities grow their own food locally—replacing lawns and abandoned lots with regenerative greenhouses, powered by technology, compost, and care.
-- Our Why: We challenge unsustainable food systems by helping people grow food, learn new skills, and reconnect with nature and their communities.
----
-## Page Layout
-**Index (Landing)**
-A simple explanation of what the marketplace is and how it works in three steps: post plants/food, browse, hand off. Clear CTAs drive users to Browse or Start Selling. MVP emphasizes Denver-only scope, backyard growers, and off-platform transactions. A minimal header/footer links to Auth, Funding, and Legal.
-
-**Funding**
-Encourages supporters to keep the project alive during MVP by donating. Presents a short why/impact blurb, a GoFundMe button (with a tiny name/email lead form), and a Stripe one-time option. Sets expectations about how funds are used (hosting, moderation, outreach) and links back to Index. Keeps the flow frictionless—form → redirect or checkout.
-
-**Login (And Register form)**
-A single page with a hero card with tabs for Login and Register using email + password. Successful auth sets a session and routes users to Profile. 
-
-**Profile (And new Crop form)**
-The seller’s workspace to manage their profile (Full name, Zip code, blurb, contact info (email/phone/social)) and post a New Crop. The inline form is short and requires ZIP, harvest date, quantity, and price/unit text plus a terms checkbox. “My Listings” shows statuses (Active, Expired, Handed Off, Deactivated) with an option to remove early if needed. It’s designed for quick repeat posting with minimal friction.
-
-**Browse**
-A clean, fast list of Denver-only active listings, sorted oldest first (FIFO). Each card surfaces the essentials: title, price/unit, ZIP, and harvest date. There are no filters yet—users click through to see full details. The page nudges new sellers with a subtle “Start Selling” prompt.
-
-**View Crop**
-Displays the full listing details and the seller’s description/notes. A Reveal Contact button shows the seller’s chosen contact info and quietly logs an inquiry for metrics; safety tips appear after reveal. Owners see a Mark as handed off control to close the loop. Anyone can Report the listing with a brief reason to flag issues.
-
-**Legal**
-A compact, plain-language popup covering acceptable use, privacy basics, and important disclaimers (off-platform payments, food safety, meet-up guidance). It’s linked in the footer and summarized during the New Crop flow. Acceptance is required when creating a listing. Written to be short enough that people actually read it.
-
-**(Admin – private)**
-A lightweight dashboard restricted to accounts with `is_admin = true`. Metrics summarizes supply/demand health (active listings, inquiries per listing, liquidity, handoffs, donations, open reports) with quick time windows (Today / 7d / 30d). Users is read-only for visibility. Listings allows deactivation, and Reports supports resolving incoming flags to keep the marketplace clean.
-
-## Tech Stack
-- Frontend: HTML, CSS, JavaScript
-- Backend: Node, Express
-- Database: PostgreSQL
-
-## APIs
-**Auth & session**
-| Method | Endpoint | Description | Body Example |
-|---|---|---|---|
-| POST | /auth/register | Register a new user into the user database. | {<br>"email": "bradley@example.com",<br>"password": "password123",<br>"name": "Bradley Magee",<br>"zip": 80202,<br>"contact": "bradley@example.com",<br>"blurb": "Spicy jalapeños"<br>} |
-
-## Database
-**users**
-`id, email (unique), password_hash, name, zip, blurb, contact, is_admin (bool), created_at`
+A community-driven platform that allows backyard gardeners, urban growers, and small-scale farmers to list and share their surplus produce directly with neighbors. The MVP focuses on simple authentication, user profiles, and preparation for listings and sessions.
 
 
+## 1. Overview
+
+The VillageVeggies backend provides authentication and user management for the MVP version of the platform. It supports:
+
+- Registering new users
+- Logging in existing users
+- Preparing for profile endpoints, session-based authentication, and listings
+
+The frontend is built in plain HTML/CSS/JavaScript and consumes JSON endpoints from a Node.js + Express backend with a PostgreSQL database.
+
+
+## 2. Page Layout
+
+### **Index (Landing)**
+Explains the three-step process (post → browse → handoff). Clear CTAs direct users to Browse or Start Selling. Highlights Denver-only MVP scope and encourages off-platform transactions.
+
+### **Funding**
+A short support page with a GoFundMe button and optional Stripe one-time donation flow. Contains a simple lead form (name/email) and explains how funds support hosting, moderation, and outreach.
+
+### **Auth (Login & Register)**
+A single page (`auth.html`) containing side-by-side Login and Register tabs.
+- **Register:** Creates a user account via `POST /auth/register` and stays on the same page.
+- **Login:** Authenticates via `POST /auth/login` and redirects to `profile.html` on success.
+
+### **Profile**
+The user's workspace. Shows their profile info (name, ZIP, blurb, contact) and will eventually allow updating via a protected `/api/profile` endpoint. Will later include “My Listings” and a “New Crop” form.
+
+### **Browse**
+Shows all active local listings. Not implemented yet — no listings table exists yet.
+
+### **View Crop**
+Displays details for a single listing. Not implemented yet — will be added after listings table and API.
+
+### **Legal**
+A small popup or page with terms, safety guidelines, privacy basics, and disclaimers. Linked from the footer.
+
+### **Admin**
+A private dashboard for accounts with `is_admin = true`. Not implemented yet — dependent on sessions and admin APIs.
+
+
+## 3. Tech Stack
+
+- **Node.js** — JavaScript runtime for the backend.
+- **Express.js** — Lightweight routing and middleware.
+- **PostgreSQL** — Relational database for all persistent data.
+- **pg (node-postgres)** — PostgreSQL client for Node.js.
+- **bcrypt** — Secure password hashing for authentication.
+- **HTML/CSS/JavaScript** — Simple, framework-free frontend.
+
+
+## 4. Folder Structure
+
+```text
+NewVersion/
+│
+├── backend/
+│   ├── server.js               # Main Express server
+│   ├── setup_db.js             # Script to initialize PostgreSQL database
+│   ├── package.json            # Backend dependencies
+│   └── node_modules/           # Installed backend packages (ignored in Git)
+│
+├── css/
+│   └── styles.css              # Global styles
+│
+├── js/
+│   ├── auth.js                 # Frontend logic for login + register
+│   ├── profile.js              # (Future) Profile functionality
+│   ├── browse.js               # (Future) Browse page functionality
+│   ├── view-crop.js            # (Future) View Crop page logic
+│   ├── legal.js                # (Future) Legal popup logic
+│   └── admin.js                # (Future) Admin dashboard logic
+│
+├── auth.html                   # Login + Register UI
+├── index.html                  # Landing page
+├── profile.html                # Dashboard for the user after login
+├── browse.html                 # (Future) Active listings page
+├── view-crop.html              # (Future) Listing detail page
+├── legal.html                  # (Future) Terms & privacy
+└── admin.html                  # (Future) Admin dashboard
+
+```
+
+
+## 5. Environment Setup
+
+*(To complete later — will describe how to run server, set env vars, install dependencies, and initialize DB.)*
+
+
+## 6. Database Schema
+### **Users Table**
+
+| Column        | Type               | Constraints           | Description                         |
+| ------------- | ------------------ | --------------------- | ----------------------------------- |
+| id            | SERIAL PRIMARY KEY | Not null              | Unique user ID.                     |
+| email         | VARCHAR(255)       | UNIQUE, NOT NULL      | Used for login.                     |
+| password_hash | TEXT               | NOT NULL              | bcrypt hash of password.            |
+| name          | VARCHAR(255)       | NOT NULL              | Display name.                       |
+| zip           | INT                | NOT NULL              | Used to verify Denver-local users.  |
+| blurb         | TEXT               | Optional              | Short description about the grower. |
+| contact       | VARCHAR(120)       | NOT NULL              | Preferred buyer contact method.     |
+| is_admin      | BOOLEAN            | Default: false        | Admin account flag.                 |
+| created_at    | DATE               | Default: CURRENT_DATE | Registration date.                  |
+
+**Note:**
+Listings, inquiries, and admin tables will be added after session authentication is implemented.
+
+
+## 7. API Endpoints
+
+### **Authentication Summary**
+
+| Method | Endpoint       | Description                | Auth Required |
+| ------ | -------------- | -------------------------- | ------------- |
+| POST   | /auth/register | Create a new user account  | No            |
+| POST   | /auth/login    | Authenticate existing user | No            |
+
+
+### **7.1 POST /auth/register**
+
+**Description:** Registers a new user.
+
+**Auth Required:** No
+**Response Behavior:** After success, frontend stays on `auth.html` (Login tab opens).
+
+**Request Body**
+
+```json
+{
+  "email": "brad@example.com",
+  "password": "Password123!",
+  "name": "Brad",
+  "zip": 80202,
+  "contact": "brad@example.com",
+  "blurb": "I grow tomatoes."
+}
+```
+
+**Success (201 Created)**
+
+```json
+{
+  "message": "User registered successfully",
+  "user": { ... }
+}
+```
+
+**Errors**
+
+| Status                        | Meaning                     | Trigger Condition                                             | Backend Behavior                           |
+| ----------------------------- | --------------------------- | ------------------------------------------------------------- | ------------------------------------------ |
+| **400 Bad Request**           | Required fields are missing | `email`, `password`, `name`, `zip`, or `contact` not provided | Returns text: `"Missing required fields"`  |
+| **409 Conflict**              | Email already exists        | PostgreSQL unique constraint violation on `email`             | Returns text: `"Email already registered"` |
+| **500 Internal Server Error** | Unexpected backend issue    | Database error, bcrypt error, query failure                   | Returns text: `"Registration failed"`      |
+
+### **7.2 POST /auth/login**
+
+**Description:** Authenticates the user.
+
+**Auth Required:** No
+**Response Behavior:** Frontend redirects to `profile.html` on success.
+
+**Request Body**
+
+```json
+{
+  "email": "brad@example.com",
+  "password": "Password123!"
+}
+```
+
+**Success (200 OK)**
+
+```json
+{
+  "message": "Login successful",
+  "user": { ... }
+}
+```
+
+**Errors**
+
+| Status                        | Meaning                 | Trigger Condition                           | Backend Behavior                                  |
+| ----------------------------- | ----------------------- | ------------------------------------------- | ------------------------------------------------- |
+| **400 Bad Request**           | Missing required fields | `email` or `password` is empty              | Returns text: `"Email and password are required"` |
+| **401 Unauthorized**          | Invalid credentials     | Email not found OR bcrypt password mismatch | Returns text: `"Invalid email or password"`       |
+| **500 Internal Server Error** | Backend-level failure   | Database query issues or bcrypt error       | Returns text: `"Login failed"`                    |
+
+## 8. Testing
+
+*(To complete after implementing Thunder Client/Postman examples.)*
+
+## 10. User Flow
+
+*(To complete after session authentication is added.)*
+
+## 11. Security
+
+*(To complete — will contain bcrypt rules, env variables, and future session notes.)*
+
+## 12. Known Limitations
+
+* No session authentication yet.
+* No protected routes.
+* No listings or crop features implemented.
+* Users cannot update profile yet.
+* Admin dashboard not active.
+
+## 13. Future Improvements
+
+* Add session-based login (cookies + middleware).
+* Add `/api/profile` GET/PUT endpoints.
+* Add listings table + listing API.
+* Add inquiries, crop handoff, and reporting.
+* Add admin dashboard functionality.
+* Add email verification & rate limiting.
