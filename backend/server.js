@@ -69,3 +69,51 @@ app.post('/auth/register', async (req, res) => {
         return res.status(500).send('Registration failed');
     }
 });
+
+// Login endpoint
+app.post('/auth/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).send('Email and password are required');
+    }
+
+    try {
+        // Fetch the user by email
+        const query = 'SELECT id, email, password_hash, name FROM users WHERE email = $1';
+        const values = [email];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(401).send('Invalid email or password');
+        }
+
+        const user = result.rows[0];
+
+        // Compare the provided password with the stored hash
+        const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+        if (!passwordMatch) {
+            return res.status(401).send('Invalid email or password');
+        }
+
+        // Successful login
+        // For now just return basic user info
+        // Later we'll add sessions or JWTs
+        res.status(200).json({
+            message: 'Login successful',
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                zip: user.zip,
+                blurb: user.blurb,
+                contact: user.contact
+            }
+        });
+    } catch (err) {
+        console.error('Error during login:', err);
+        return res.status(500).send('Login failed');
+    }
+});
+

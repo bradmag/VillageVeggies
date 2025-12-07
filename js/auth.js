@@ -80,7 +80,7 @@ if (loginForm) {
 
     errorE1.textContent = '';
 
-    if (!email || !passqword) {
+    if (!email || !password) {
       errorE1.textContent = 'Please enter both email and password.';
       return;
     }
