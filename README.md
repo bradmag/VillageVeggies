@@ -82,7 +82,6 @@ NewVersion/
 ├── view-crop.html              # (Future) Listing detail page
 ├── legal.html                  # (Future) Terms & privacy
 └── admin.html                  # (Future) Admin dashboard
-
 ```
 
 
@@ -145,7 +144,15 @@ Listings, inquiries, and admin tables will be added after session authentication
 ```json
 {
   "message": "User registered successfully",
-  "user": { ... }
+  "user": 
+  {
+    "email": "brad@example.com",
+    "password": "Password123!",
+    "name": "Brad",
+    "zip": 80202,
+    "contact": "brad@example.com",
+    "blurb": "I grow tomatoes."
+  }
 }
 ```
 
@@ -178,7 +185,15 @@ Listings, inquiries, and admin tables will be added after session authentication
 ```json
 {
   "message": "Login successful",
-  "user": { ... }
+  "user": 
+  {
+    "email": "brad@example.com",
+    "password": "Password123!",
+    "name": "Brad",
+    "zip": 80202,
+    "contact": "brad@example.com",
+    "blurb": "I grow tomatoes."
+  }
 }
 ```
 
@@ -194,15 +209,15 @@ Listings, inquiries, and admin tables will be added after session authentication
 
 *(To complete after implementing Thunder Client/Postman examples.)*
 
-## 10. User Flow
+## 9. User Flow
 
 *(To complete after session authentication is added.)*
 
-## 11. Security
+## 10. Security
 
 *(To complete — will contain bcrypt rules, env variables, and future session notes.)*
 
-## 12. Known Limitations
+## 11. Known Limitations
 
 * No session authentication yet.
 * No protected routes.
@@ -210,7 +225,7 @@ Listings, inquiries, and admin tables will be added after session authentication
 * Users cannot update profile yet.
 * Admin dashboard not active.
 
-## 13. Future Improvements
+## 12. Future Improvements
 
 * Add session-based login (cookies + middleware).
 * Add `/api/profile` GET/PUT endpoints.
