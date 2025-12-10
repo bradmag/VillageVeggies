@@ -89,6 +89,7 @@ if (loginForm) {
       const response = await fetch('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Important: include cookies for session
         body: JSON.stringify({ email, password })
       });
 

@@ -52,8 +52,8 @@ async function createTables() {
     await client.connect();
     console.log(`Connected to database ${DB_NAME}`);
 
-    // Optional: Drop existing users table
-    await client.query(`DROP TABLE IF EXISTS users`);
+    // --- USERS TABLE ---
+    await client.query(`DROP TABLE IF EXISTS users CASCADE`);
 
     const createUsersTableQuery = `
     CREATE TABLE IF NOT EXISTS users (
@@ -67,11 +67,46 @@ async function createTables() {
         is_admin BOOLEAN DEFAULT FALSE,
         created_at DATE DEFAULT CURRENT_DATE
     );`;
-await client.query(createUsersTableQuery);
+
+    await client.query(createUsersTableQuery);
     console.log("Users table created successfully.");
+
+    // --- LISTINGS TABLE ---
+    await client.query(`DROP TABLE IF EXISTS listings CASCADE`);
+
+    const createListingsTableQuery = `
+    CREATE TABLE IF NOT EXISTS listings (
+        id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title VARCHAR(255) NOT NULL,
+        price VARCHAR(255) NOT NULL,        -- freeform MVP pricing
+        quantity VARCHAR(255) NOT NULL,     -- freeform MVP quantity
+        harvest_date DATE NOT NULL,
+        growing_method VARCHAR(255),
+        notes TEXT,
+        zip INT NOT NULL,
+        status VARCHAR(50) DEFAULT 'active',
+        created_at TIMESTAMP DEFAULT NOW()
+    );`;
+
+    await client.query(createListingsTableQuery);
+    console.log("Listings table created successfully.");
+
+    // --- (OPTIONAL BUT RECOMMENDED) SESSIONS TABLE ---
+    // Only create this if you're using `connect-pg-simple`
+    const createSessionTableQuery = `
+    CREATE TABLE IF NOT EXISTS session (
+        sid VARCHAR NOT NULL PRIMARY KEY,
+        sess JSON NOT NULL,
+        expire TIMESTAMP(6) NOT NULL
+    );
+    `;
+    await client.query(createSessionTableQuery);
+    console.log("Session table created successfully.");
 
     await client.end();
 }
+
 
 async function main() {
     try {

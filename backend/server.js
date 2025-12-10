@@ -1,11 +1,24 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 const app = express();
 const path = require('path');
 
 app.use(express.static(path.join(__dirname, '..')));
 
 app.use(express.json());
+
+// Session configuration
+app.use(session({
+    secret: 'villageveggies-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // Set to true if using HTTPS
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
 
 app.get("/", (req, res) => {
     res.send("VillageVeggies Server is running");
@@ -24,6 +37,12 @@ const pool = new Pool({
     password: "VillagePassword123",
     port: 5432,
 })
+
+// Handle database connection errors
+pool.on('error', (err, client) => {
+    console.error('Unexpected error on idle client', err);
+    process.exit(-1);
+});
 
 
 // Register endpoint
@@ -70,6 +89,14 @@ app.post('/auth/register', async (req, res) => {
     }
 });
 
+// Authentication middleware
+function requireAuth(req, res, next) {
+    if (req.session && req.session.userId) {
+        return next();
+    }
+    return res.status(401).json({ error: 'Authentication required' });
+}
+
 // Login endpoint
 app.post('/auth/login', async (req, res) => {
     const { email, password } = req.body;
@@ -80,7 +107,7 @@ app.post('/auth/login', async (req, res) => {
 
     try {
         // Fetch the user by email
-        const query = 'SELECT id, email, password_hash, name FROM users WHERE email = $1';
+        const query = 'SELECT id, email, password_hash, name, zip, blurb, contact FROM users WHERE email = $1';
         const values = [email];
         const result = await pool.query(query, values);
 
@@ -97,9 +124,11 @@ app.post('/auth/login', async (req, res) => {
             return res.status(401).send('Invalid email or password');
         }
 
+        // Create session
+        req.session.userId = user.id;
+        req.session.userEmail = user.email;
+
         // Successful login
-        // For now just return basic user info
-        // Later we'll add sessions or JWTs
         res.status(200).json({
             message: 'Login successful',
             user: {
@@ -114,6 +143,47 @@ app.post('/auth/login', async (req, res) => {
     } catch (err) {
         console.error('Error during login:', err);
         return res.status(500).send('Login failed');
+    }
+});
+
+// Logout endpoint
+app.post('/auth/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ error: 'Logout failed' });
+        }
+        res.clearCookie('connect.sid');
+        res.status(200).json({ message: 'Logout successful' });
+    });
+});
+
+// Get current user profile (protected route)
+app.get('/api/profile', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+
+        const userQuery = 'SELECT id, email, name, zip, blurb, contact FROM users WHERE id = $1';
+        const userResult = await pool.query(userQuery, [userId]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const user = userResult.rows[0];
+
+        // Get user's listings (using the correct table name 'listings')
+        const listingsQuery = 'SELECT id, title, price, quantity, harvest_date, status FROM listings WHERE user_id = $1 ORDER BY created_at DESC';
+        const listingsResult = await pool.query(listingsQuery, [userId]);
+
+        res.json({
+            user: user,
+            listings: listingsResult.rows
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch profile" });
     }
 });
 

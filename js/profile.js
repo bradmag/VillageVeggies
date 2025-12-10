@@ -1,86 +1,85 @@
-// Set footer year
-document.addEventListener('DOMContentLoaded', () => {
+// Set footer year and load profile data
+document.addEventListener('DOMContentLoaded', async () => {
   const yearEl = document.getElementById('year');
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
   }
 
-  // Mock profile data
-  const mockProfile = {
-    name: "Jane Doe",
-    email: "jane@example.com",
-    zip: "80202",
-    blurb: "Backyard gardener growing tomatoes and herbs.",
-    contact: "Text me at (555) 123-4567"
-  };
-
-  // Mock crops data
-  const mockCrops = [
-    { 
-      id: 1, 
-      name: "Tomatoes", 
-      price: "$4/lb", 
-      description: "Fresh and ripe.", 
-      zip: "80202", 
-      date: "2024-02-01" 
-    },
-    { 
-      id: 2, 
-      name: "Basil", 
-      price: "$2/bundle", 
-      description: "Picked this morning.", 
-      zip: "80202", 
-      date: "2024-02-03" 
-    },
-    { 
-      id: 3, 
-      name: "Lettuce", 
-      price: "$3/head", 
-      description: "Crisp and fresh from the garden.", 
-      zip: "80202", 
-      date: "2024-02-05" 
-    },
-    { 
-      id: 4, 
-      name: "Peppers", 
-      price: "$5/lb", 
-      description: "Mixed variety of bell peppers.", 
-      zip: "80202", 
-      date: "2024-02-07" 
-    }
-  ];
-
-  // Populate profile information
-  const profileName = document.getElementById('profile-name');
-  const profileEmail = document.getElementById('profile-email');
-  const profileZip = document.getElementById('profile-zip');
-  const profileBlurb = document.getElementById('profile-blurb');
-  const profileContact = document.getElementById('profile-contact');
-
-  if (profileName) profileName.textContent = mockProfile.name;
-  if (profileEmail) profileEmail.textContent = mockProfile.email;
-  if (profileZip) profileZip.textContent = mockProfile.zip;
-  if (profileBlurb) profileBlurb.textContent = mockProfile.blurb;
-  if (profileContact) profileContact.textContent = mockProfile.contact;
-
-  // Populate crops grid
-  const cropsGrid = document.getElementById('crops-grid');
-  if (cropsGrid) {
-    mockCrops.forEach(crop => {
-      const cropCard = document.createElement('a');
-      cropCard.href = `crop.html?id=${crop.id}`;
-      cropCard.className = 'crop-card';
-      
-      cropCard.innerHTML = `
-        <h3 class="crop-title">${crop.name}</h3>
-        <p class="crop-description">${crop.description}</p>
-        <p class="crop-price">${crop.price}</p>
-        <p class="crop-zip">ZIP: ${crop.zip}</p>
-        <p class="crop-date">Posted: ${crop.date}</p>
-      `;
-      
-      cropsGrid.appendChild(cropCard);
+  // Handle logout link
+  const logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          window.location.href = '/auth.html?mode=login';
+        } else {
+          // Even if logout fails, redirect to login
+          window.location.href = '/auth.html?mode=login';
+        }
+      } catch (error) {
+        console.error('Error during logout:', error);
+        // Redirect anyway
+        window.location.href = '/auth.html?mode=login';
+      }
     });
+  }
+
+  // Fetch user profile data from API
+  try {
+    const response = await fetch('/api/profile', {
+      method: 'GET',
+      credentials: 'include' // Important: include cookies for session
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Not authenticated, redirect to login
+        window.location.href = '/auth.html?mode=login';
+        return;
+      }
+      throw new Error('Failed to fetch profile');
+    }
+
+    const data = await response.json();
+    const user = data.user;
+
+    // Populate profile information
+    const profileName = document.getElementById('profile-name');
+    const profileEmail = document.getElementById('profile-email');
+    const profileZip = document.getElementById('profile-zip');
+    const profileBlurb = document.getElementById('profile-blurb');
+    const profileContact = document.getElementById('profile-contact');
+
+    if (profileName) profileName.textContent = user.name || '';
+    if (profileEmail) profileEmail.textContent = user.email || '';
+    if (profileZip) profileZip.textContent = user.zip || '';
+    if (profileBlurb) profileBlurb.textContent = user.blurb || '';
+    if (profileContact) profileContact.textContent = user.contact || '';
+
+    // Populate crops grid (will be empty until crops table is created)
+    const cropsGrid = document.getElementById('crops-grid');
+    if (cropsGrid) {
+      // Crops will be loaded here once the crops table and API are implemented
+      // For now, show a message if there are no crops
+      if (cropsGrid.children.length === 0) {
+        const noCropsMsg = document.createElement('p');
+        noCropsMsg.textContent = 'No crops listed yet. Click "Add Crop" to get started!';
+        noCropsMsg.style.textAlign = 'center';
+        noCropsMsg.style.padding = '2rem';
+        noCropsMsg.style.color = '#666';
+        cropsGrid.appendChild(noCropsMsg);
+      }
+    }
+  } catch (error) {
+    console.error('Error loading profile:', error);
+    // Redirect to login on error
+    window.location.href = '/auth.html?mode=login';
   }
 });
 
