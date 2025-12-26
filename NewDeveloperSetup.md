@@ -20,6 +20,8 @@
 
 **Why:** Git is how you pull/push code to GitHub and work with branches/PRs.
 
+**Version:** 2.52.0 Or Newer
+
 1. Install **Git for Windows**: (download + install)
 
 * [https://git-scm.com/download/win](https://git-scm.com/download/win)
@@ -30,11 +32,22 @@
 git --version
 ```
 
+You should see something like this:
+```powershell
+git version 2.52.0.windows.1
+```
+
 3. Set your commit identity (so commits show your name/email):
 
 ```powershell
-git config --global user.name "Bradley Magee"
-git config --global user.email "YOUR_EMAIL_HERE"
+git config --global user.name "[your name]"
+git config --global user.email "[your GitHub email address]"
+```
+
+4. Check your name and email were set:
+
+```powershell
+git config --global --list
 ```
 
 ---
@@ -42,6 +55,8 @@ git config --global user.email "YOUR_EMAIL_HERE"
 ### Install VS Code (recommended editor)
 
 **Why:** VS Code is the easiest way to edit HTML/CSS/JS and Node projects, and it integrates well with Git.
+
+**Version:** 1.107.1 Or Newer
 
 1. Install **VS Code**:
 
@@ -57,13 +72,27 @@ If `code` is not recognized, open VS Code → Command Palette → **“Shell Com
 
 ---
 
-### Install Node.js using nvm-windows (required for backend)
+### Install nvm npm and node  (required for backend)
 
-**Why:** The backend is Node + Express. `npm` installs packages like `express`, `pg`, `bcrypt`, and session middleware.
+**Why:** 
+
+* Node.js is the engine that runs JavaScript outside the browser
+* npm is the package manager that installs libraries for node projects
+* nvm is the version manager that installs and switches between node versions
+
+**Version:** 
+
+* Node: v20.19.6 Or Newer
+* npm: 10.8.2 Or Newer
+* nvm: 1.2.2 Or Newer
 
 1. Install **nvm-windows** (download the installer):
 
 * [https://github.com/coreybutler/nvm-windows/releases](https://github.com/coreybutler/nvm-windows/releases)
+
+Scrol down to Assets, and there should be a link to Download **nvm-setup.exe** 
+
+Run it and accept default locations (recommended)
 
 Close and reopen PowerShell after installing.
 
