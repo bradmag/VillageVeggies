@@ -33,6 +33,9 @@ The user's workspace. Shows their profile info (name, ZIP, blurb, contact) and w
 ### **Browse**
 Shows all active local listings. Not implemented yet — no listings table exists yet.
 
+### **New Crop**
+Form so users enter a new crop into their dashboard
+
 ### **View Crop**
 Displays details for a single listing. Not implemented yet — will be added after listings table and API.
 
@@ -111,7 +114,7 @@ Listings, inquiries, and admin tables will be added after session authentication
 
 ## 7. API Endpoints
 
-### **Authentication Summary**
+### **Authentication APIs Summary**
 
 | Method | Endpoint       | Description                | Auth Required |
 | ------ | -------------- | -------------------------- | ------------- |
@@ -119,7 +122,7 @@ Listings, inquiries, and admin tables will be added after session authentication
 | POST   | /auth/login    | Authenticate existing user | No            |
 
 
-### **7.1 POST /auth/register**
+### **POST /auth/register**
 
 **Description:** Registers a new user.
 
@@ -164,7 +167,7 @@ Listings, inquiries, and admin tables will be added after session authentication
 | **409 Conflict**              | Email already exists        | PostgreSQL unique constraint violation on `email`             | Returns text: `"Email already registered"` |
 | **500 Internal Server Error** | Unexpected backend issue    | Database error, bcrypt error, query failure                   | Returns text: `"Registration failed"`      |
 
-### **7.2 POST /auth/login**
+### **POST /auth/login**
 
 **Description:** Authenticates the user.
 
@@ -204,6 +207,29 @@ Listings, inquiries, and admin tables will be added after session authentication
 | **400 Bad Request**           | Missing required fields | `email` or `password` is empty              | Returns text: `"Email and password are required"` |
 | **401 Unauthorized**          | Invalid credentials     | Email not found OR bcrypt password mismatch | Returns text: `"Invalid email or password"`       |
 | **500 Internal Server Error** | Backend-level failure   | Database query issues or bcrypt error       | Returns text: `"Login failed"`                    |
+
+### **Profile APIs Summary**
+
+| Method | Endpoint           | Description                            | Auth Required |
+| ------ | ------------------ | -------------------------------------- | ------------- |
+| GET    | /profile/user      | Get this user's info                   | yes           |
+| GET    | /profile/dashboard | Get all crop cards for this user       | yes           |
+
+**To-Do**
+Add the info for the profile API endpoints
+
+### **Crop APIs Summary**
+
+| Method | Endpoint           | Description                            | Auth Required |
+| ------ | ------------------ | -------------------------------------- | ------------- |
+| POST   | /crop/new-crop     | Post new crop info to the crops table  | yes           |
+| GET    | /crop/info         | Get the crop info for this crop        | yes           |
+| Delete | /crop/delete       | Set the is active status to false      | yes           |
+
+**To-Do**
+Add the info for the crop API endpoints
+
+
 
 ## 8. Testing
 
