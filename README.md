@@ -1,261 +1,255 @@
-# VillageVeggies
+# VillageVeggies (MVP)
 
-A community-driven platform that allows backyard gardeners, urban growers, and small-scale farmers to list and share their surplus produce directly with neighbors. The MVP focuses on simple authentication, user profiles, and preparation for listings and sessions.
+## Project Overview
 
+VillageVeggies is a simple MVP web platform that connects **small-scale gardeners** with **local food enthusiasts** along Colorado’s **Front Range**. The primary goal is to validate local supply and demand for backyard-grown food using the smallest practical feature set, while maintaining a clean, production-ready architecture.
 
-## 1. Overview
+The MVP intentionally avoids payments, on-platform messaging, and image uploads. All transactions and coordination occur **off-platform** once a grower’s contact details are revealed.
 
-The VillageVeggies backend provides authentication and user management for the MVP version of the platform. It supports:
+---
 
-- Registering new users
-- Logging in existing users
-- Preparing for profile endpoints, session-based authentication, and listings
+## Core Features (MVP)
 
-The frontend is built in plain HTML/CSS/JavaScript and consumes JSON endpoints from a Node.js + Express backend with a PostgreSQL database.
+* User authentication (register, login, logout)
+* Authenticated users can browse local produce listings
+* Any authenticated user can create listings (no role separation)
+* Listings are restricted to the **Front Range** using a ZIP code allowlist
+* Grower contact information is **click-to-reveal** to reduce scraping and abuse
+* User dashboard displaying profile information and owned listings
+* Text-only listings (no images in MVP)
 
+---
 
-## 2. Page Layout
+## Tech Stack
 
-### **Index (Landing)**
-Explains the three-step process (post → browse → handoff). Clear CTAs direct users to Browse or Start Selling. Highlights Denver-only MVP scope and encourages off-platform transactions.
+### Backend
 
-### **Funding**
-A short support page with a GoFundMe button and optional Stripe one-time donation flow. Contains a simple lead form (name/email) and explains how funds support hosting, moderation, and outreach.
+* Node.js
+* Express.js
+* PostgreSQL
+* Cookie-based session authentication
 
-### **Auth (Login & Register)**
-A single page (`auth.html`) containing side-by-side Login and Register tabs.
-- **Register:** Creates a user account via `POST /auth/register` and stays on the same page.
-- **Login:** Authenticates via `POST /auth/login` and redirects to `profile.html` on success.
+### Frontend
 
-### **Profile**
-The user's workspace. Shows their profile info (name, ZIP, blurb, contact) and will eventually allow updating via a protected `/api/profile` endpoint. Will later include “My Listings” and a “New Crop” form.
+* HTML, CSS, and JavaScript
+* Static assets served directly from Express (`/public`)
 
-### **Browse**
-Shows all active local listings. Not implemented yet — no listings table exists yet.
+---
 
-### **New Crop**
-Form so users enter a new crop into their dashboard
+## Architecture Overview
 
-### **View Crop**
-Displays details for a single listing. Not implemented yet — will be added after listings table and API.
+### Project Structure
 
-### **Legal**
-A small popup or page with terms, safety guidelines, privacy basics, and disclaimers. Linked from the footer.
-
-### **Admin**
-A private dashboard for accounts with `is_admin = true`. Not implemented yet — dependent on sessions and admin APIs.
-
-
-## 3. Tech Stack
-
-- **Node.js** — JavaScript runtime for the backend.
-- **Express.js** — Lightweight routing and middleware.
-- **PostgreSQL** — Relational database for all persistent data.
-- **pg (node-postgres)** — PostgreSQL client for Node.js.
-- **bcrypt** — Secure password hashing for authentication.
-- **HTML/CSS/JavaScript** — Simple, framework-free frontend.
-
-
-## 4. Folder Structure
-
-```text
+```
 NewVersion/
 │
 ├── backend/
-│   ├── server.js               # Main Express server
-│   ├── setup_db.js             # Script to initialize PostgreSQL database
-│   ├── package.json            # Backend dependencies
-│   └── node_modules/           # Installed backend packages (ignored in Git)
+│   ├── server.js        # Main Express server
+│   ├── setup_db.js      # Database initialization script
+│   ├── package.json     # Backend dependencies
+│   └── node_modules/    # Installed packages (gitignored)
 │
 ├── css/
-│   └── styles.css              # Global styles
+│   └── styles.css       # Global styles
 │
 ├── js/
-│   ├── auth.js                 # Frontend logic for login + register
-│   ├── profile.js              # (Future) Profile functionality
-│   ├── browse.js               # (Future) Browse page functionality
-│   ├── view-crop.js            # (Future) View Crop page logic
-│   ├── legal.js                # (Future) Legal popup logic
-│   └── admin.js                # (Future) Admin dashboard logic
+│   ├── auth.js          # Login and registration logic
+│   ├── profile.js       # Profile functionality
+│   ├── browse.js        # Browse local crops logic
+│   ├── new-crop.js      # New crop logic
+│   ├── view-crop.js     # Crops detail logic
+│   ├── legal.js         # Legal modal logic
+│   └── admin.js         # Admin dashboard logic
 │
-├── auth.html                   # Login + Register UI
-├── index.html                  # Landing page
-├── profile.html                # Dashboard for the user after login
-├── browse.html                 # (Future) Active listings page
-├── view-crop.html              # (Future) Listing detail page
-├── legal.html                  # (Future) Terms & privacy
-└── admin.html                  # (Future) Admin dashboard
+├── auth.html            # Login and registration UI
+├── index.html           # Landing page
+├── profile.html         # User dashboard
+├── browse.html          # Browse local crops page
+├── new-crop.html        # New crop input page
+├── view-crop.html       # Crop detail page
+├── legal.html           # Terms and privacy
+└── admin.html           # Admin dashboard
 ```
 
+### Runtime Architecture
 
-## 5. Environment Setup
+```
+Browser
+  │
+  │  HTTPS + Cookies
+  ▼
+Node.js / Express (Azure App Service)
+  ├─ Serves static frontend
+  ├─ JSON API (/api/*)
+  └─ Session middleware (PostgreSQL-backed)
 
-*(To complete later — will describe how to run server, set env vars, install dependencies, and initialize DB.)*
+PostgreSQL (Azure Flexible Server)
+  ├─ users
+  ├─ listings
+  └─ sessions
+```
 
+The application is deployed as a single-origin system, avoiding CORS complexity and simplifying cookie-based authentication.
 
-## 6. Database Schema
-### **Users Table**
+---
 
-| Column        | Type               | Constraints           | Description                         |
-| ------------- | ------------------ | --------------------- | ----------------------------------- |
-| id            | SERIAL PRIMARY KEY | Not null              | Unique user ID.                     |
-| email         | VARCHAR(255)       | UNIQUE, NOT NULL      | Used for login.                     |
-| password_hash | TEXT               | NOT NULL              | bcrypt hash of password.            |
-| name          | VARCHAR(255)       | NOT NULL              | Display name.                       |
-| zip           | INT                | NOT NULL              | Used to verify Denver-local users.  |
-| blurb         | TEXT               | Optional              | Short description about the grower. |
-| contact       | VARCHAR(120)       | NOT NULL              | Preferred buyer contact method.     |
-| is_admin      | BOOLEAN            | Default: false        | Admin account flag.                 |
-| created_at    | DATE               | Default: CURRENT_DATE | Registration date.                  |
+## Database Schema (MVP)
 
-**Note:**
-Listings, inquiries, and admin tables will be added after session authentication is implemented.
+### users
 
+* `id` (PK)
+* `email` (unique)
+* `password_hash`
+* `display_name`
+* `zip` (TEXT)
+* `bio` (TEXT)
+* `contact_text` (TEXT — user-defined contact information)
+* `created_at`
+* `updated_at`
 
-## 7. API Endpoints
+### listings
 
-### **Authentication APIs Summary**
+* `id` (PK)
+* `user_id` (FK → users.id)
+* `title`
+* `description`
+* `category` (e.g., vegetables, fruit, herbs, eggs)
+* `quantity` (NUMERIC)
+* `price` (NUMERIC)
+* `available_from` (DATE)
+* `available_to` (DATE)
+* `pickup_zip` (TEXT)
+* `is_active` (BOOLEAN)
+* `created_at`
+* `updated_at`
 
-| Method | Endpoint       | Description                | Auth Required |
-| ------ | -------------- | -------------------------- | ------------- |
-| POST   | /auth/register | Create a new user account  | No            |
-| POST   | /auth/login    | Authenticate existing user | No            |
+### sessions
 
+* Managed automatically by the session store (`connect-pg-simple`)
 
-### **POST /auth/register**
+---
 
-**Description:** Registers a new user.
+## Authentication & Sessions
 
-**Auth Required:** No
-**Response Behavior:** After success, frontend stays on `auth.html` (Login tab opens).
+* Cookie-based authentication using Express sessions
+* Passwords are securely hashed using bcrypt
+* Raw passwords are never stored or returned by the API
+* Sessions are persisted in PostgreSQL to survive application restarts
 
-**Request Body**
+---
+
+## API Overview
+
+All API routes are prefixed with `/api`. Authentication is required unless explicitly stated otherwise.
+
+### Auth
+
+* `POST /auth/register`
+* `POST /auth/login`
+* `POST /auth/logout`
+
+### Current User
+
+* `GET /me`
+
+### Dashboard
+
+* `GET /dashboard`
+
+Returns the authenticated user and their listings in a single response:
 
 ```json
 {
-  "email": "brad@example.com",
-  "password": "Password123!",
-  "name": "Brad",
-  "zip": 80202,
-  "contact": "brad@example.com",
-  "blurb": "I grow tomatoes."
+  "user": { "id": 1, "email": "...", "displayName": "...", "zip": "80202" },
+  "myListings": []
 }
 ```
 
-**Success (201 Created)**
+### Listings
+
+* `GET /listings`
+* `GET /listings/:id`
+* `POST /listings`
+* `PATCH /listings/:id` (owner only)
+* `DELETE /listings/:id` (owner only, soft delete)
+
+### Reveal Contact
+
+* `POST /listings/:id/reveal-contact`
+
+Returns:
 
 ```json
-{
-  "message": "User registered successfully",
-  "user": 
-  {
-    "email": "brad@example.com",
-    "password": "Password123!",
-    "name": "Brad",
-    "zip": 80202,
-    "contact": "brad@example.com",
-    "blurb": "I grow tomatoes."
-  }
-}
+{ "contactText": "Preferred contact info entered by grower" }
 ```
 
-**Errors**
+---
 
-| Status                        | Meaning                     | Trigger Condition                                             | Backend Behavior                           |
-| ----------------------------- | --------------------------- | ------------------------------------------------------------- | ------------------------------------------ |
-| **400 Bad Request**           | Required fields are missing | `email`, `password`, `name`, `zip`, or `contact` not provided | Returns text: `"Missing required fields"`  |
-| **409 Conflict**              | Email already exists        | PostgreSQL unique constraint violation on `email`             | Returns text: `"Email already registered"` |
-| **500 Internal Server Error** | Unexpected backend issue    | Database error, bcrypt error, query failure                   | Returns text: `"Registration failed"`      |
+## ZIP Allowlist (Front Range)
 
-### **POST /auth/login**
+Listings are filtered using a server-side ZIP code allowlist representing the Colorado Front Range.
 
-**Description:** Authenticates the user.
+Example environment variable:
 
-**Auth Required:** No
-**Response Behavior:** Frontend redirects to `profile.html` on success.
-
-**Request Body**
-
-```json
-{
-  "email": "brad@example.com",
-  "password": "Password123!"
-}
+```
+ALLOWED_ZIPS=80002,80014,80021,80202,80301
 ```
 
-**Success (200 OK)**
+---
 
-```json
-{
-  "message": "Login successful",
-  "user": 
-  {
-    "email": "brad@example.com",
-    "password": "Password123!",
-    "name": "Brad",
-    "zip": 80202,
-    "contact": "brad@example.com",
-    "blurb": "I grow tomatoes."
-  }
-}
+## Hosting & Deployment (Azure)
+
+### Hosting Stack
+
+* **Azure App Service (Linux)** — hosts the Node.js / Express application
+* **Azure Database for PostgreSQL – Flexible Server** — primary relational database and session store
+
+### Deployment Flow
+
+1. Create an Azure App Service configured for Node.js
+2. Create an Azure PostgreSQL Flexible Server instance
+3. Configure required environment variables in App Service
+4. Enable GitHub-based deployment via Deployment Center
+5. Push changes to the `main` branch to trigger automatic deployment
+
+### Required Environment Variables
+
+```
+NODE_ENV=production
+PORT=8080
+DATABASE_URL=postgres://...
+SESSION_SECRET=long-random-string
+ALLOWED_ZIPS=...
+COOKIE_SECURE=true
+COOKIE_SAMESITE=lax
 ```
 
-**Errors**
+---
 
-| Status                        | Meaning                 | Trigger Condition                           | Backend Behavior                                  |
-| ----------------------------- | ----------------------- | ------------------------------------------- | ------------------------------------------------- |
-| **400 Bad Request**           | Missing required fields | `email` or `password` is empty              | Returns text: `"Email and password are required"` |
-| **401 Unauthorized**          | Invalid credentials     | Email not found OR bcrypt password mismatch | Returns text: `"Invalid email or password"`       |
-| **500 Internal Server Error** | Backend-level failure   | Database query issues or bcrypt error       | Returns text: `"Login failed"`                    |
+## MVP Roadmap
 
-### **Profile APIs Summary**
+### Phase 1 (Current)
 
-| Method | Endpoint           | Description                            | Auth Required |
-| ------ | ------------------ | -------------------------------------- | ------------- |
-| GET    | /profile/user      | Get this user's info                   | yes           |
-| GET    | /profile/dashboard | Get all crop cards for this user       | yes           |
+* Authentication
+* Listings
+* Contact reveal
+* Azure hosting
 
-**To-Do**
-Add the info for the profile API endpoints
+### Phase 2 (Post-MVP)
 
-### **Crop APIs Summary**
+* Image uploads (Azure Blob Storage)
+* Subscription model for image uploads
+* Redis-backed sessions
+* Public browsing mode
+* Messaging or contact masking
+* Admin moderation tools
 
-| Method | Endpoint           | Description                            | Auth Required |
-| ------ | ------------------ | -------------------------------------- | ------------- |
-| POST   | /crop/new-crop     | Post new crop info to the crops table  | yes           |
-| GET    | /crop/info         | Get the crop info for this crop        | yes           |
-| Delete | /crop/delete       | Set the is active status to false      | yes           |
+---
 
-**To-Do**
-Add the info for the crop API endpoints
+## Non-Goals (MVP)
 
-
-
-## 8. Testing
-
-*(To complete after implementing Thunder Client/Postman examples.)*
-
-## 9. User Flow
-
-*(To complete after session authentication is added.)*
-
-## 10. Security
-
-*(To complete — will contain bcrypt rules, env variables, and future session notes.)*
-
-## 11. Known Limitations
-
-* No session authentication yet.
-* No protected routes.
-* No listings or crop features implemented.
-* Users cannot update profile yet.
-* Admin dashboard not active.
-
-## 12. Future Improvements
-
-* Add session-based login (cookies + middleware).
-* Add `/api/profile` GET/PUT endpoints.
-* Add listings table + listing API.
-* Add inquiries, crop handoff, and reporting.
-* Add admin dashboard functionality.
-* Add email verification & rate limiting.
+* Payments
+* On-platform messaging
+* Delivery logistics
+* Ratings or reviews
+* Mobile applications
