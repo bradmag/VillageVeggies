@@ -72,28 +72,25 @@ NewVersion/
 │
 ├── js/
 │   ├── auth.js                 # Frontend logic for login + register
-│   ├── profile.js              # (Future) Profile functionality
-│   ├── browse.js               # (Future) Browse page functionality
-│   ├── view-crop.js            # (Future) View Crop page logic
-│   ├── legal.js                # (Future) Legal popup logic
-│   └── admin.js                # (Future) Admin dashboard logic
+│   ├── profile.js              # Profile functionality
+│   ├── browse.js               # Browse page functionality
+│   ├── new-crop.js             # New Crop page logic
+│   ├── view-crop.js            # View Crop page logic
+│   ├── legal.js                # Legal popup logic
+│   └── admin.js                # Admin dashboard logic
 │
 ├── auth.html                   # Login + Register UI
 ├── index.html                  # Landing page
 ├── profile.html                # Dashboard for the user after login
-├── browse.html                 # (Future) Active listings page
-├── view-crop.html              # (Future) Listing detail page
-├── legal.html                  # (Future) Terms & privacy
-└── admin.html                  # (Future) Admin dashboard
+├── browse.html                 # Active listings page
+├── new-crop.html               # Creating new crops page
+├── view-crop.html              # Crops detail page
+├── legal.html                  # Terms & privacy
+└── admin.html                  # Admin dashboard
 ```
 
 
-## 5. Environment Setup
-
-*(To complete later — will describe how to run server, set env vars, install dependencies, and initialize DB.)*
-
-
-## 6. Database Schema
+## 5. Database Schema
 ### **Users Table**
 
 | Column        | Type               | Constraints           | Description                         |
@@ -112,7 +109,7 @@ NewVersion/
 Listings, inquiries, and admin tables will be added after session authentication is implemented.
 
 
-## 7. API Endpoints
+## 6. API Endpoints
 
 ### **Authentication APIs Summary**
 
@@ -231,27 +228,20 @@ Add the info for the crop API endpoints
 
 
 
-## 8. Testing
+## 7. Testing
 
 *(To complete after implementing Thunder Client/Postman examples.)*
 
-## 9. User Flow
+## 8. User Flow
 
 *(To complete after session authentication is added.)*
 
-## 10. Security
+## 9. Security
 
 *(To complete — will contain bcrypt rules, env variables, and future session notes.)*
 
-## 11. Known Limitations
 
-* No session authentication yet.
-* No protected routes.
-* No listings or crop features implemented.
-* Users cannot update profile yet.
-* Admin dashboard not active.
-
-## 12. Future Improvements
+## 10. Future Improvements
 
 * Add session-based login (cookies + middleware).
 * Add `/api/profile` GET/PUT endpoints.

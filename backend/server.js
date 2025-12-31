@@ -187,3 +187,53 @@ app.get('/api/profile', requireAuth, async (req, res) => {
     }
 });
 
+// Create new crop/listing endpoint (protected route)
+app.post('/api/crops', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { title, price, quantity, harvestDate, zip, growingMethod, notes } = req.body;
+
+        // Validate required fields
+        if (!title || !price || !quantity || !harvestDate || !zip) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Validate zip is a number
+        const zipNum = parseInt(zip, 10);
+        if (isNaN(zipNum) || zipNum.toString().length !== 5) {
+            return res.status(400).json({ error: 'Invalid ZIP code' });
+        }
+
+        // Build the INSERT SQL query
+        const query = `
+            INSERT INTO listings (user_id, title, price, quantity, harvest_date, zip, growing_method, notes, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'active')
+            RETURNING id, title, price, quantity, harvest_date, zip, growing_method, notes, status, created_at;
+        `;
+
+        const values = [
+            userId,
+            title,
+            price,
+            quantity,
+            harvestDate,
+            zipNum,
+            growingMethod || null,
+            notes || null
+        ];
+
+        // Execute the query
+        const result = await pool.query(query, values);
+
+        // Respond with the newly created listing
+        res.status(201).json({
+            message: 'Crop created successfully',
+            listing: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error('Error creating crop:', err);
+        res.status(500).json({ error: 'Failed to create crop' });
+    }
+});
+

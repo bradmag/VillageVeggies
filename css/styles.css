@@ -703,7 +703,9 @@ main {
     text-align: center;
 }
 
+
 /* New Crop Page Styles */
+ 
 .new-crop-container {
     background-color: var(--nyanza);
     margin: 2rem auto;
