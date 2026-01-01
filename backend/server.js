@@ -173,7 +173,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
         const user = userResult.rows[0];
 
         // Get user's listings (using the correct table name 'listings')
-        const listingsQuery = 'SELECT id, title, price, quantity, harvest_date, status FROM listings WHERE user_id = $1 ORDER BY created_at DESC';
+        const listingsQuery = 'SELECT id, title, price, quantity, harvest_date, zip, status, created_at FROM listings WHERE user_id = $1 ORDER BY created_at DESC';
         const listingsResult = await pool.query(listingsQuery, [userId]);
 
         res.json({
@@ -234,6 +234,71 @@ app.post('/api/crops', requireAuth, async (req, res) => {
     } catch (err) {
         console.error('Error creating crop:', err);
         res.status(500).json({ error: 'Failed to create crop' });
+    }
+});
+
+// Browse crops by ZIP code (protected route)
+// Returns active listings from other users in the same ZIP code as the logged-in user
+app.get('/api/browse', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        // Get the current user's ZIP code
+        const userQuery = 'SELECT zip FROM users WHERE id = $1';
+        const userResult = await pool.query(userQuery, [userId]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userZip = userResult.rows[0].zip;
+
+        if (!userZip) {
+            return res.status(400).json({ error: 'User ZIP code not set' });
+        }
+
+        // Get active listings from other users in the same ZIP code
+        // Join with users table to get grower name
+        const listingsQuery = `
+            SELECT 
+                l.id, 
+                l.title, 
+                l.price, 
+                l.quantity, 
+                l.harvest_date, 
+                l.zip, 
+                l.status, 
+                l.created_at,
+                u.name as grower_name
+            FROM listings l
+            JOIN users u ON l.user_id = u.id
+            WHERE l.zip = $1 
+                AND l.user_id != $2 
+                AND l.status = 'active'
+            ORDER BY l.created_at DESC
+        `;
+        const listingsResult = await pool.query(listingsQuery, [userZip, userId]);
+
+        res.json({
+            zip: userZip,
+            listings: listingsResult.rows
+        });
+
+    } catch (err) {
+        console.error('Error fetching browse listings:', err);
+        console.error('Error details:', {
+            message: err.message,
+            code: err.code,
+            detail: err.detail
+        });
+        res.status(500).json({ 
+            error: "Failed to fetch listings",
+            details: err.message 
+        });
     }
 });
 
