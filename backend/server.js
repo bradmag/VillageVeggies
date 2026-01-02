@@ -31,10 +31,10 @@ app.listen(3000, () => {
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    user: "villageveggie",
+    user: "postgres",
     host: "127.0.0.1",
     database: "villageveggies",
-    password: "VillagePassword123",
+    password: "Marchingon$4!",
     port: 5432,
 })
 
@@ -184,6 +184,24 @@ app.get('/api/profile', requireAuth, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to fetch profile" });
+    }
+});
+
+// API to grab info passed off of zip
+app.get('/search', async(req, res) => {
+    const zip = req.query.zip;
+
+    if (!zip) return res.json([]);
+    
+    try {
+
+        const query = 'SELECT * FROM listings WHERE zip = $1';
+        const result = await pool.query(query, [zip]);
+        res.json(result.rows)
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Database error' })
     }
 });
 

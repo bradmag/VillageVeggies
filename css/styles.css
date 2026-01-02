@@ -808,3 +808,31 @@ main {
 .new-crop-button:hover {
     background-color: var(--dartmouth-green);
 }
+
+.browse-crops {
+    text-align: center;
+}
+
+.browse-crops-inner #zip-code {
+    background: var(--nyanza);
+    margin: 0 auto 2rem auto;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 10px;
+    border: 3px solid var(--gold);
+    text-align: left;
+    box-sizing: border-box;
+}
+
+#browse-crops-grid {
+    background: var(--nyanza);
+    margin: 0 auto 2rem auto;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 10px;
+    border: 3px solid var(--gold);
+    text-align: left;
+    box-sizing: border-box;
+}
