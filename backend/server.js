@@ -187,23 +187,6 @@ app.get('/api/profile', requireAuth, async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
-// API to grab info passed off of zip
-app.get('/search', async(req, res) => {
-    const zip = req.query.zip;
-
-    if (!zip) return res.json([]);
-    
-    try {
-
-        const query = 'SELECT * FROM listings WHERE zip = $1';
-        const result = await pool.query(query, [zip]);
-        res.json(result.rows)
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Database error' })
-=======
 // Create new crop/listing endpoint (protected route)
 app.post('/api/crops', requireAuth, async (req, res) => {
     try {
@@ -258,6 +241,7 @@ app.post('/api/crops', requireAuth, async (req, res) => {
 // Returns active listings from other users in the same ZIP code as the logged-in user
 app.get('/api/browse', requireAuth, async (req, res) => {
     try {
+
         const userId = req.session.userId;
 
         if (!userId) {
@@ -272,7 +256,7 @@ app.get('/api/browse', requireAuth, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const userZip = userResult.rows[0].zip;
+        const userZip = req.query.zip || userResult.rows[0].zip;
 
         if (!userZip) {
             return res.status(400).json({ error: 'User ZIP code not set' });
@@ -316,7 +300,6 @@ app.get('/api/browse', requireAuth, async (req, res) => {
             error: "Failed to fetch listings",
             details: err.message 
         });
->>>>>>> origin/dev
     }
 });
 
