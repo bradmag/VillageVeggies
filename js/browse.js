@@ -1,10 +1,8 @@
-<<<<<<< HEAD
 
 
 document.addEventListener('DOMContentLoaded', async () => {
 
     const zipInput = document.getElementById('zip-code');
-    const grid = document.getElementById('browse-crops-grid');
 
     let debounceTimer;
 
@@ -12,10 +10,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!zip || isNaN(zip)) return;
 
         try {
-            const res = await fetch(`/search?zip=${zip}`);
+            const res = await fetch(`/api/browse?zip=${zip-code}`);
             const data = await res.json();
-            renderListings(data);
-            // Print out listings in renderListings(listings);
+            createBrowseCropCard(data);
         } catch (err) {
             console.error('Error occured at:', err);
         }
@@ -41,26 +38,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (err) {
         console.error('Failed to preload user zip:', err);
     }
+});
 
-    function renderListings(listings){
-        grid.innerHTML = '';
-
-        if (listings.length === 0){
-            grid.innerHTML = '<p>No results found</p>'; return;
-        }    
-        
-        listings.array.forEach(element => {
-            const card = document.createElement('div');
-            card.className = 'crop-card';
-            card.innerHTML = `
-                <h3>${element.id}</h3>
-                <p>Price: $${element.price}</p>
-            `
-        });
-    }   
-})
-=======
-// Helper function to create a simplified crop card for browse page
 function createBrowseCropCard(listing) {
   const card = document.createElement('a');
   card.href = `/view-crop.html?id=${listing.id}`;
@@ -190,5 +169,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 });
->>>>>>> origin/dev
 
