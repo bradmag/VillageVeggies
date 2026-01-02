@@ -1,3 +1,61 @@
+// Helper function to create a crop card element
+function createCropCard(listing) {
+  const card = document.createElement('a');
+  card.href = `/view-crop.html?id=${listing.id}`;
+  card.className = 'crop-card';
+  
+  // Title
+  const title = document.createElement('h3');
+  title.className = 'crop-title';
+  title.textContent = listing.title || 'Untitled Crop';
+  card.appendChild(title);
+  
+  // Price
+  const price = document.createElement('div');
+  price.className = 'crop-price';
+  price.textContent = `Price: ${listing.price || 'Not specified'}`;
+  card.appendChild(price);
+  
+  // Quantity
+  const quantity = document.createElement('div');
+  quantity.className = 'crop-description';
+  quantity.textContent = `Quantity: ${listing.quantity || 'Not specified'}`;
+  card.appendChild(quantity);
+  
+  // ZIP Code
+  if (listing.zip) {
+    const zip = document.createElement('div');
+    zip.className = 'crop-zip';
+    zip.textContent = `ZIP: ${listing.zip}`;
+    card.appendChild(zip);
+  }
+  
+  // Harvest Date
+  if (listing.harvest_date) {
+    const harvestDate = document.createElement('div');
+    harvestDate.className = 'crop-date';
+    const date = new Date(listing.harvest_date);
+    harvestDate.textContent = `Harvest Date: ${date.toLocaleDateString()}`;
+    card.appendChild(harvestDate);
+  }
+  
+  // Status badge (if not active)
+  if (listing.status && listing.status !== 'active') {
+    const status = document.createElement('div');
+    status.style.marginTop = '0.5rem';
+    status.style.padding = '0.25rem 0.5rem';
+    status.style.borderRadius = '4px';
+    status.style.backgroundColor = '#fef2f2';
+    status.style.color = '#991b1b';
+    status.style.fontSize = '0.85rem';
+    status.style.display = 'inline-block';
+    status.textContent = listing.status.charAt(0).toUpperCase() + listing.status.slice(1);
+    card.appendChild(status);
+  }
+  
+  return card;
+}
+
 // Set footer year and load profile data
 document.addEventListener('DOMContentLoaded', async () => {
   const yearEl = document.getElementById('year');
@@ -62,18 +120,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (profileBlurb) profileBlurb.textContent = user.blurb || '';
     if (profileContact) profileContact.textContent = user.contact || '';
 
-    // Populate crops grid (will be empty until crops table is created)
+    // Populate crops grid with user's listings
     const cropsGrid = document.getElementById('crops-grid');
     if (cropsGrid) {
-      // Crops will be loaded here once the crops table and API are implemented
-      // For now, show a message if there are no crops
-      if (cropsGrid.children.length === 0) {
+      const listings = data.listings || [];
+      
+      // Clear any existing content
+      cropsGrid.innerHTML = '';
+      
+      if (listings.length === 0) {
+        // Show message if there are no crops
         const noCropsMsg = document.createElement('p');
         noCropsMsg.textContent = 'No crops listed yet. Click "Add Crop" to get started!';
         noCropsMsg.style.textAlign = 'center';
         noCropsMsg.style.padding = '2rem';
         noCropsMsg.style.color = '#666';
         cropsGrid.appendChild(noCropsMsg);
+      } else {
+        // Create crop cards for each listing
+        listings.forEach(listing => {
+          const card = createCropCard(listing);
+          cropsGrid.appendChild(card);
+        });
       }
     }
   } catch (error) {
