@@ -277,7 +277,10 @@ app.get('/api/browse', requireAuth, async (req, res) => {
                 u.name as grower_name
             FROM listings l
             JOIN users u ON l.user_id = u.id
-            WHERE l.zip = $1 
+            WHERE (
+                ($1 ~ '^[0-9]+$' AND l.zip::text LIKE $1 || '%') 
+                OR ($1 !~ '^[0-9]+$' AND l.title ILIKE '%' || $1 || '%')
+            )
                 AND l.user_id != $2 
                 AND l.status = 'active'
             ORDER BY l.created_at DESC
