@@ -29,13 +29,14 @@ async function fetchListing(zip){
     if (!zip) return;
 
     try {
-        const res = await fetch(`/api/browse?zip=${zip}`);
+        const res = await fetch(`/api/browse?search=${zip}`);
         const data = await res.json();
         renderListings(data);
     } catch (err) {
         console.error('Error fetching listings:', err);
     }
 }
+
 function renderListings(data){
     const grid = document.getElementById('browse-crops-grid');
     grid.innerHTML = '';
