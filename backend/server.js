@@ -262,30 +262,63 @@ app.get('/api/browse', requireAuth, async (req, res) => {
             return res.status(400).json({ error: 'User ZIP code not set' });
         }
 
-        // Get active listings from other users in the same ZIP code
+        // Convert to string for SQL query
+        const searchZip = String(userZip);
+
+        // Get active listings from other users matching the ZIP code
         // Join with users table to get grower name
-        const listingsQuery = `
-            SELECT 
-                l.id, 
-                l.title, 
-                l.price, 
-                l.quantity, 
-                l.harvest_date, 
-                l.zip, 
-                l.status, 
-                l.created_at,
-                u.name as grower_name
-            FROM listings l
-            JOIN users u ON l.user_id = u.id
-            WHERE (
-                ($1 ~ '^[0-9]+$' AND l.zip::text LIKE $1 || '%') 
-                OR ($1 !~ '^[0-9]+$' AND l.title ILIKE '%' || $1 || '%')
-            )
-                AND l.user_id != $2 
-                AND l.status = 'active'
-            ORDER BY l.created_at DESC
-        `;
-        const listingsResult = await pool.query(listingsQuery, [userZip, userId]);
+        // If searchZip is numeric (all digits), search by ZIP prefix match
+        // Otherwise, search by title
+        const isNumericZip = /^[0-9]+$/.test(searchZip);
+        
+        let listingsQuery;
+        let queryParams;
+        
+        if (isNumericZip) {
+            // Search by ZIP code prefix match
+            listingsQuery = `
+                SELECT 
+                    l.id, 
+                    l.title, 
+                    l.price, 
+                    l.quantity, 
+                    l.harvest_date, 
+                    l.zip, 
+                    l.status, 
+                    l.created_at,
+                    u.name as grower_name
+                FROM listings l
+                JOIN users u ON l.user_id = u.id
+                WHERE l.zip::text LIKE $1 || '%'
+                    AND l.user_id != $2 
+                    AND l.status = 'active'
+                ORDER BY l.created_at DESC
+            `;
+            queryParams = [searchZip, userId];
+        } else {
+            // Search by title
+            listingsQuery = `
+                SELECT 
+                    l.id, 
+                    l.title, 
+                    l.price, 
+                    l.quantity, 
+                    l.harvest_date, 
+                    l.zip, 
+                    l.status, 
+                    l.created_at,
+                    u.name as grower_name
+                FROM listings l
+                JOIN users u ON l.user_id = u.id
+                WHERE l.title ILIKE '%' || $1 || '%'
+                    AND l.user_id != $2 
+                    AND l.status = 'active'
+                ORDER BY l.created_at DESC
+            `;
+            queryParams = [searchZip, userId];
+        }
+        
+        const listingsResult = await pool.query(listingsQuery, queryParams);
 
         res.json({
             zip: userZip,

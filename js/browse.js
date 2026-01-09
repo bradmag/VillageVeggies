@@ -1,35 +1,97 @@
-
-
+// Set footer year and load browse listings
 document.addEventListener('DOMContentLoaded', async () => {
+  const yearEl = document.getElementById('year');
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
 
-    const zipInput = document.getElementById('zip-code');
-    let debounceTimer;
-
-    zipInput.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        const zipValue = parseInt(zipInput.value, 10);
-
-        debounceTimer = setTimeout(() => {
-            fetchListing(zipValue);
-        }, 100);
+  // Handle logout link
+  const logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          window.location.href = '/auth.html?mode=login';
+        } else {
+          window.location.href = '/auth.html?mode=login';
+        }
+      } catch (error) {
+        console.error('Error during logout:', error);
+        window.location.href = '/auth.html?mode=login';
+      }
     });
+  }
 
-    try {
-        const userInfo = await fetch(`/api/profile`);
-        const data = await userInfo.json();
-        const userZip = parseInt(data.user.zip, 10);
-        zipInput.value = userZip;
-        fetchListing(userZip);
-    } catch (err) {
-        console.error('Failed to preload user zip:', err);
+  // Set up ZIP code input with debounced search
+  const zipInput = document.getElementById('zip-code');
+  let debounceTimer;
+
+  if (zipInput) {
+    zipInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const zipValue = zipInput.value.trim();
+      
+      if (!zipValue) return;
+
+      debounceTimer = setTimeout(() => {
+        const zipNum = parseInt(zipValue, 10);
+        if (!isNaN(zipNum)) {
+          fetchListing(zipNum);
+        }
+      }, 300);
+    });
+  }
+
+  // Load user's ZIP code and initial listings
+  try {
+    const userInfo = await fetch('/api/profile', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (!userInfo.ok) {
+      if (userInfo.status === 401) {
+        window.location.href = '/auth.html?mode=login';
+        return;
+      }
+      throw new Error('Failed to fetch user info');
     }
+    
+    const data = await userInfo.json();
+    const userZip = parseInt(data.user.zip, 10);
+    
+    if (zipInput && !isNaN(userZip)) {
+      zipInput.value = userZip;
+      fetchListing(userZip);
+    }
+  } catch (err) {
+    console.error('Failed to preload user zip:', err);
+  }
 });
 
 async function fetchListing(zip){
     if (!zip) return;
 
     try {
-        const res = await fetch(`/api/browse?search=${zip}`);
+        const res = await fetch(`/api/browse?zip=${zip}`, {
+            method: 'GET',
+            credentials: 'include' // Important: include cookies for session
+        });
+        
+        if (!res.ok) {
+            if (res.status === 401) {
+                window.location.href = '/auth.html?mode=login';
+                return;
+            }
+            throw new Error(`Failed to fetch: ${res.status}`);
+        }
+        
         const data = await res.json();
         renderListings(data);
     } catch (err) {
@@ -75,93 +137,4 @@ function createBrowseCropCard(listing) {
   return card;
 }
 
-// Set footer year and load browse listings
-document.addEventListener('DOMContentLoaded', async () => {
-  const yearEl = document.getElementById('year');
-  if (yearEl) {
-    yearEl.textContent = new Date().getFullYear();
-  }
-
-  // Handle logout link
-  const logoutLink = document.getElementById('logout-link');
-  if (logoutLink) {
-    logoutLink.addEventListener('click', async (e) => {
-      e.preventDefault();
-      try {
-        const response = await fetch('/auth/logout', {
-          method: 'POST',
-          credentials: 'include'
-        });
-        
-        if (response.ok) {
-          window.location.href = '/auth.html?mode=login';
-        } else {
-          // Even if logout fails, redirect to login
-          window.location.href = '/auth.html?mode=login';
-        }
-      } catch (error) {
-        console.error('Error during logout:', error);
-        // Redirect anyway
-        window.location.href = '/auth.html?mode=login';
-      }
-    });
-  }
-
-  // Fetch browse listings from API
-  try {
-    const response = await fetch('/api/browse', {
-      method: 'GET',
-      credentials: 'include' // Important: include cookies for session
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        // Not authenticated, redirect to login
-        window.location.href = '/auth.html?mode=login';
-        return;
-      }
-      
-      // Try to get error message from response
-      let errorMessage = `Failed to fetch listings (${response.status})`;
-      try {
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorData.details || errorMessage;
-        } else {
-          const text = await response.text();
-          errorMessage = text || errorMessage;
-        }
-      } catch (e) {
-        errorMessage = `Server error: ${response.status} ${response.statusText}`;
-      }
-      
-      console.error('Browse API error:', errorMessage, 'Status:', response.status);
-      throw new Error(errorMessage);
-    }
-
-    // Parse JSON response
-    let data;
-    try {
-      data = await response.json();
-    } catch (e) {
-      console.error('Failed to parse JSON response:', e);
-      throw new Error('Invalid response from server');
-    }
-    
-  } catch (error) {
-    console.error('Error loading browse listings:', error);
-    // Show error message with more details
-    const cropsGrid = document.getElementById('browse-crops-grid');
-    if (cropsGrid) {
-      const errorMsg = document.createElement('p');
-      errorMsg.style.textAlign = 'center';
-      errorMsg.style.padding = '2rem';
-      errorMsg.style.color = '#991b1b';
-      errorMsg.textContent = `Failed to load crops: ${error.message}. Please check the console for details.`;
-      cropsGrid.innerHTML = '';
-      cropsGrid.appendChild(errorMsg);
-    }
-  }
-});
 
