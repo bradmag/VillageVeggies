@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     zipInput.addEventListener('input', () => {
         clearTimeout(debounceTimer);
+
         const zipValue = parseInt(zipInput.value, 10);
+        console.log(zipValue);
 
         debounceTimer = setTimeout(() => {
             fetchListing(zipValue);
@@ -18,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userInfo = await fetch(`/api/profile`);
         const data = await userInfo.json();
         const userZip = parseInt(data.user.zip, 10);
-        zipInput.value = userZip;
         fetchListing(userZip);
     } catch (err) {
         console.error('Failed to preload user zip:', err);
@@ -29,7 +30,7 @@ async function fetchListing(zip){
     if (!zip) return;
 
     try {
-        const res = await fetch(`/api/browse?search=${zip}`);
+        const res = await fetch(`/api/browse?zip=${zip}`);
         const data = await res.json();
         renderListings(data);
     } catch (err) {
