@@ -31,10 +31,10 @@ app.listen(3000, () => {
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    user: "villageveggie",
+    user: "villageveggies_dev",
     host: "127.0.0.1",
     database: "villageveggies",
-    password: "VillagePassword123",
+    password: "TempPass123",
     port: 5432,
 })
 
@@ -302,3 +302,120 @@ app.get('/api/browse', requireAuth, async (req, res) => {
     }
 });
 
+// Reveal grower contact information (protected route)
+// Returns grower contact info - tracking can be added here later
+// MUST be before /api/crops/:id route to match correctly
+app.post('/api/crops/:id/reveal-contact', requireAuth, async (req, res) => {
+    try {
+        const cropId = parseInt(req.params.id, 10);
+        
+        if (isNaN(cropId)) {
+            return res.status(400).json({ error: 'Invalid crop ID' });
+        }
+
+        // Verify crop exists and is active
+        const cropQuery = `
+            SELECT l.id, l.user_id, l.status
+            FROM listings l
+            WHERE l.id = $1 AND l.status = 'active'
+        `;
+        const cropResult = await pool.query(cropQuery, [cropId]);
+
+        if (cropResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Crop not found' });
+        }
+
+        const crop = cropResult.rows[0];
+        const growerId = crop.user_id;
+
+        // Get grower contact information
+        const growerQuery = 'SELECT contact FROM users WHERE id = $1';
+        const growerResult = await pool.query(growerQuery, [growerId]);
+
+        if (growerResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Grower not found' });
+        }
+
+        const contactText = growerResult.rows[0].contact || 'Contact information not available';
+
+        // TODO: Add tracking/analytics here to track website activity
+
+        res.json({
+            contactText: contactText
+        });
+
+    } catch (err) {
+        console.error('Error revealing contact:', err);
+        res.status(500).json({ error: 'Failed to reveal contact' });
+    }
+});
+
+// Get single crop/listing by ID (protected route)
+// Returns crop details and grower information (without contact info)
+app.get('/api/crops/:id', requireAuth, async (req, res) => {
+    try {
+        const cropId = parseInt(req.params.id, 10);
+        console.log('GET /api/crops/:id - cropId:', cropId);
+        
+        if (isNaN(cropId)) {
+            return res.status(400).json({ error: 'Invalid crop ID' });
+        }
+
+        // Get crop listing with grower information
+        // Join with users table to get grower details (excluding contact)
+        const query = `
+            SELECT 
+                l.id,
+                l.title,
+                l.price,
+                l.quantity,
+                l.harvest_date,
+                l.zip,
+                l.growing_method,
+                l.notes,
+                l.status,
+                l.created_at,
+                u.id as grower_id,
+                u.name as grower_name,
+                u.zip as grower_zip,
+                u.blurb as grower_blurb
+            FROM listings l
+            JOIN users u ON l.user_id = u.id
+            WHERE l.id = $1 AND l.status = 'active'
+        `;
+        
+        const result = await pool.query(query, [cropId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Crop not found' });
+        }
+
+        const listing = result.rows[0];
+
+        // Format the response
+        res.json({
+            crop: {
+                id: listing.id,
+                title: listing.title,
+                price: listing.price,
+                quantity: listing.quantity,
+                harvestDate: listing.harvest_date,
+                zip: listing.zip,
+                growingMethod: listing.growing_method,
+                description: listing.notes,
+                status: listing.status,
+                createdAt: listing.created_at
+            },
+            grower: {
+                id: listing.grower_id,
+                name: listing.grower_name,
+                zip: listing.grower_zip,
+                blurb: listing.grower_blurb
+            }
+        });
+
+    } catch (err) {
+        console.error('Error fetching crop:', err);
+        res.status(500).json({ error: 'Failed to fetch crop' });
+    }
+});
