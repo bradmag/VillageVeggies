@@ -241,6 +241,7 @@ app.post('/api/crops', requireAuth, async (req, res) => {
 // Returns active listings from other users in the same ZIP code as the logged-in user
 app.get('/api/browse', requireAuth, async (req, res) => {
     try {
+
         const userId = req.session.userId;
 
         if (!userId) {
@@ -255,7 +256,7 @@ app.get('/api/browse', requireAuth, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const userZip = userResult.rows[0].zip;
+        const userZip = req.query.zip || userResult.rows[0].zip;
 
         if (!userZip) {
             return res.status(400).json({ error: 'User ZIP code not set' });
@@ -276,7 +277,10 @@ app.get('/api/browse', requireAuth, async (req, res) => {
                 u.name as grower_name
             FROM listings l
             JOIN users u ON l.user_id = u.id
-            WHERE l.zip = $1 
+            WHERE (
+                ($1 ~ '^[0-9]+$' AND l.zip::text LIKE $1 || '%') 
+                OR ($1 !~ '^[0-9]+$' AND l.title ILIKE '%' || $1 || '%')
+            )
                 AND l.user_id != $2 
                 AND l.status = 'active'
             ORDER BY l.created_at DESC

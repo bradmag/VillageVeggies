@@ -1,4 +1,60 @@
-// Helper function to create a simplified crop card for browse page
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const zipInput = document.getElementById('zip-code');
+    let debounceTimer;
+
+    zipInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        const zipValue = parseInt(zipInput.value, 10);
+
+        debounceTimer = setTimeout(() => {
+            fetchListing(zipValue);
+        }, 100);
+    });
+
+    try {
+        const userInfo = await fetch(`/api/profile`);
+        const data = await userInfo.json();
+        const userZip = parseInt(data.user.zip, 10);
+        zipInput.value = userZip;
+        fetchListing(userZip);
+    } catch (err) {
+        console.error('Failed to preload user zip:', err);
+    }
+});
+
+async function fetchListing(zip){
+    if (!zip) return;
+
+    try {
+        const res = await fetch(`/api/browse?search=${zip}`);
+        const data = await res.json();
+        renderListings(data);
+    } catch (err) {
+        console.error('Error fetching listings:', err);
+    }
+}
+
+function renderListings(data){
+    const grid = document.getElementById('browse-crops-grid');
+    grid.innerHTML = '';
+
+    const listings = data.listings || [];
+
+    if (listings.length === 0){
+        const noCropsMsg = document.createElement('p');
+        noCropsMsg.textContent = `No crops available in your area (ZIP: ${data.zip || 'N/A'}). Check back later!`;
+        grid.appendChild(noCropsMsg);
+    } else {
+        listings.forEach(listing => {
+        const card = createBrowseCropCard(listing);
+        grid.appendChild(card);
+        });
+    }
+}
+
 function createBrowseCropCard(listing) {
   const card = document.createElement('a');
   card.href = `/view-crop.html?id=${listing.id}`;
@@ -92,27 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Failed to parse JSON response:', e);
       throw new Error('Invalid response from server');
     }
-    const listings = data.listings || [];
-
-    // Populate crops grid
-    const cropsGrid = document.getElementById('browse-crops-grid');
-    if (cropsGrid) {
-      // Clear any existing content
-      cropsGrid.innerHTML = '';
-      
-      if (listings.length === 0) {
-        // Show message if there are no crops
-        const noCropsMsg = document.createElement('p');
-        noCropsMsg.textContent = `No crops available in your area (ZIP: ${data.zip || 'N/A'}). Check back later!`;
-        cropsGrid.appendChild(noCropsMsg);
-      } else {
-        // Create crop cards for each listing
-        listings.forEach(listing => {
-          const card = createBrowseCropCard(listing);
-          cropsGrid.appendChild(card);
-        });
-      }
-    }
+    
   } catch (error) {
     console.error('Error loading browse listings:', error);
     // Show error message with more details
