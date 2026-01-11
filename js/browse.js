@@ -1,22 +1,53 @@
 // Set footer year and load browse listings
 document.addEventListener('DOMContentLoaded', async () => {
+
+    const searchType = document.getElementById('search-type');
+    const searchInput = document.getElementById('search-input');
+    
+    searchType.addEventListener('change', () => {
+        searchInput.value = '';
+        
+        if (searchType.value === 'zip') {
+            searchInput.placeholder = 'Enter ZIP code';
+        } else if (searchType.value === 'crop') {
+            searchInput.placeholder = 'Enter Crop name';
+        }
+    });
+
     const yearEl = document.getElementById('year');
     if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
     }
 
-    const zipInput = document.getElementById('zip-code');
+    try {
+        const userInfo = await fetch(`/api/profile`);
+        const data = await userInfo.json();
+        const userZip = parseInt(data.user.zip, 10);
+        fetchListing(userZip, "zip");
+    } catch (err) {
+        console.error('Failed to preload user zip:', err);
+    }
+
     let debounceTimer;
 
-    zipInput.addEventListener('input', () => {
+    searchInput.addEventListener('input', () => {
         clearTimeout(debounceTimer);
 
-        const zipValue = parseInt(zipInput.value, 10);
-        console.log(zipValue);
-
+        console.log()
         debounceTimer = setTimeout(() => {
-            fetchListing(zipValue);
-        }, 100);
+            if (searchType.value === 'zip') {
+
+                const zipValue = parseInt(searchInput.value.trim(), 10);
+
+                if (!isNaN(zipValue)){
+                    fetchListing(zipValue, searchType.value.trim());
+                }
+                    
+            } else if (searchType.value === 'crop') {
+                fetchListing(searchInput.value.trim(), searchType.value.trim());
+            }
+        
+        }, 300);
     });
 
     // Handle logout link
@@ -41,52 +72,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         });
     }
-
-    try {
-        const userInfo = await fetch(`/api/profile`);
-        const data = await userInfo.json();
-        const userZip = parseInt(data.user.zip, 10);
-        fetchListing(userZip);
-    } catch (err) {
-        console.error('Failed to preload user zip:', err);
-    }
-
-  // Load user's ZIP code and initial listings
-  try {
-    const userInfo = await fetch('/api/profile', {
-      method: 'GET',
-      credentials: 'include'
-    });
-    
-    if (!userInfo.ok) {
-      if (userInfo.status === 401) {
-        window.location.href = '/auth.html?mode=login';
-        return;
-      }
-      throw new Error('Failed to fetch user info');
-    }
-    
-    const data = await userInfo.json();
-    const userZip = parseInt(data.user.zip, 10);
-    
-    if (zipInput && !isNaN(userZip)) {
-      zipInput.value = userZip;
-      fetchListing(userZip);
-    }
-  } catch (err) {
-    console.error('Failed to preload user zip:', err);
-  }
 });
     
 
-async function fetchListing(zip){
-    if (!zip) return;
+async function fetchListing(search, searchType){
+    if (!search) return;
 
     try {
-        const res = await fetch(`/api/browse?zip=${zip}`, {
-            method: 'GET',
-            credentials: 'include' // Important: include cookies for session
-        });
+
+        let res;
+        
+        if (searchType === 'zip') {
+            res = await fetch(`/api/browse?zip=${search}`, {
+                method: 'GET',
+                credentials:    'include' // Important: include cookies for session
+            });
+        } else if (searchType === 'crop') {
+            res = await fetch(`/api/browse?title=${search}`, {
+                method: 'GET',
+                credentials: 'include' // Important: include cookies for session
+            });
+        }
         
         if (!res.ok) {
             if (res.status === 401) {
@@ -98,6 +104,7 @@ async function fetchListing(zip){
         
         const data = await res.json();
         renderListings(data);
+
     } catch (err) {
         console.error('Error fetching listings:', err);
     }
@@ -111,7 +118,7 @@ function renderListings(data){
 
     if (listings.length === 0){
         const noCropsMsg = document.createElement('p');
-        noCropsMsg.textContent = `No crops available in your area (ZIP: ${data.zip || 'N/A'}). Check back later!`;
+        noCropsMsg.textContent = `No crops available in your area. Check back later!`;
         grid.appendChild(noCropsMsg);
     } else {
         listings.forEach(listing => {
