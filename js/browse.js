@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         searchInput.value = '';
         
         if (searchType.value === 'zip') {
+            fetchListing('', 'zip');
             searchInput.placeholder = 'Enter ZIP code';
         } else if (searchType.value === 'crop') {
+            fetchListing('', 'crop')
             searchInput.placeholder = 'Enter Crop name';
         }
     });
