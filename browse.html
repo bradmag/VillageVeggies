@@ -38,9 +38,15 @@
       <!-- Crops Grid Section -->
       <section class="browse-crops">
         <div class="browse-crops-inner">
-           <input type="text" id="zip-code" placeholder="Enter ZIP code">
-           <div id="browse-crops-grid" class="crops-grid">
-            <!-- Crop cards will be inserted here by JS -->
+            <input type="text" id="search-input" placeholder="Enter ZIP code">
+
+            <select id="search-type">
+              <option value="zip">Zip Code</option>
+              <option value="crop">Crop Name</option>
+            </select>
+
+            <div id="browse-crops-grid" class="crops-grid">
+              <!-- Crop cards will be inserted here by JS -->
           </div>
         </div>
       </section>
