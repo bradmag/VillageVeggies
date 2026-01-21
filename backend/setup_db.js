@@ -6,10 +6,10 @@ const { Client } = require("pg");
 
 // For MVP, hardcode the connection info
 const DB_NAME = "villageveggies";
-const DB_USER = "villageveggies_dev";
+const DB_USER = "postgres";
 
 // Don't forget to set your actual password here and change back before committing
-const DB_PASSWORD = "Marchingon$4!";
+const DB_PASSWORD = "postgres_pw";
 
 const DB_HOST = "127.0.0.1";
 const DB_PORT = 5432;
@@ -19,7 +19,7 @@ async function setupDatabase() {
     const client = new Client({
         user: DB_USER,
         host: DB_HOST,
-        database: "postgres",
+        database: DB_NAME,
         password: DB_PASSWORD,
         port: DB_PORT,
     });
