@@ -32,10 +32,10 @@ const { Pool } = require('pg');
 const { error } = require('console');
 
 const pool = new Pool({
-    user: "villageveggies_dev",
+    user: "postgres",
     host: "127.0.0.1",
     database: "villageveggies",
-    password: "villageveggies_pw",
+    password: "Marchingon$4!",
     port: 5432,
 })
 
