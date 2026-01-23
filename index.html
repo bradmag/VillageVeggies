@@ -3,33 +3,142 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>VillageVeggies - Home</title>
+  <title>VillageVeggies - Check Local Plant Shop Inventory Online</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description"
-    content="VillageVeggies, your source for fresh and organic vegetables gown by your neighbors." />
+    content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence." />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
-  <header class="site-header">
-    <!-- <p>Site Header</p> -->
+  <header class="header">
     <div class="header-inner">
-      <a class="header-logo" href="/">LocalGreens</a>
-      <nav aria-label="Primary">
-        <ul class="nav">
-          <li><a href="/login.html">Login</a></li>
-          <li><a href="/funding.html">Support The Movement</a></li>
-        </ul>
-      </nav>
+      <a class="header-logo" href="/">VillageVeggies</a>
     </div>
   </header>
+
   <main id="main">
-    <p>Main Content</p>
+    <!-- Hero / CTA -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <h1>Get early access to VillageVeggies</h1>
+          <p class="hero-subtext">Join the beta waitlist — we'll notify you when the site is ready in your area.</p>
+          <form id="waitlist-form" class="waitlist-form" action="https://formspree.io/f/xgoaowbg" method="POST">
+
+            <label for="email">Join the waitlist</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" required />
+
+            <!-- Optional: segment who is signing up -->
+            <label for="type">I am a:</label>
+            <select id="type" name="type">
+              <option value="shop">Plant shop / nursery</option>
+              <option value="plant_lover">Plant lover</option>
+            </select>
+
+            <!-- Optional: location -->
+            <label for="location">City (optional)</label>
+            <input type="text" id="location" name="location" placeholder="Denver" />
+
+            <!-- Hidden tracking fields (UTM/source) -->
+            <input type="hidden" id="source" name="source" />
+            <input type="hidden" id="utm_campaign" name="utm_campaign" />
+            <input type="hidden" id="utm_medium" name="utm_medium" />
+            <input type="hidden" id="utm_content" name="utm_content" />
+
+            <!-- Honeypot (spam trap) -->
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <button type="submit">Get early access</button>
+
+
+          </form>
+          <p class="form-note">We respect your privacy. We'll only use your email to send beta access information.</p>
+          <p id="waitlist-success" style="display:none;">
+            🌱 You’re on the list! We’ll email you when VillageVeggies launches in your area.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works section -->
+    <section class="how-it-works">
+      <div class="how-it-works-inner">
+        <h2>How it works</h2>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-icon">🌱</div>
+            <h3>Shops post inventory</h3>
+            <p>Plant shops and nurseries update their available inventory online</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🔍</div>
+            <h3>Customers browse availability</h3>
+            <p>Check what's in stock before you visit the store</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">✅</div>
+            <h3>Visit the store with confidence</h3>
+            <p>Know what's available and make your trip worthwhile</p>
+          </div>
+        </div>
+        <p class="scope-note">Sign up to be notified when VillageVeggies beta opens in your area.</p>
+      </div>
+    </section>
   </main>
+
   <footer class="site-footer">
-    <p>Site Footer</p>
+    <div class="footer-inner">
+      <nav aria-label="Footer">
+      </nav>
+      <small>© <span id="year"></span> VillageVeggies</small>
+    </div>
   </footer>
-  <script src="js/index.js" defer></script>
 </body>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const form = document.getElementById("waitlist-form");
+  const success = document.getElementById("waitlist-success");
+  const setIfPresent = (id, key) => {
+    const val = params.get(key);
+    if (val) document.getElementById(id).value = val;
+  };
+  
+  // Common UTM params
+  setIfPresent("source", "utm_source");
+  setIfPresent("utm_campaign", "utm_campaign");
+  setIfPresent("utm_medium", "utm_medium");
+  setIfPresent("utm_content", "utm_content");
+
+  // If you want a fallback source param (e.g. ?source=instagram)
+  if (!document.getElementById("source").value) {
+    setIfPresent("source", "source");
+  }
+
+
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const res = await fetch(form.action, {
+      method: "POST",
+      body: formData,
+      headers: { "Accept": "application/json" },
+    });
+
+    if (res.ok) {
+      form.reset();
+      form.style.display = "none";
+      success.style.display = "block";
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+  });
+</script>
+
 
 </html>
