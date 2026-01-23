@@ -17,14 +17,14 @@
 
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%
 }
 
 body {
@@ -83,19 +83,24 @@ main {
     min-height: 60px;
 }
 
-
-.logo {
-    font-weight: 800;
-    font-size: 1.25rem;
-    color: var(--sea-green);
-    text-decoration: none;
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem
 }
 
-.nav {
-    list-style: none;
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
+.step-card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--nyanza);
+  border-radius: 12px;
+  border: 2px solid var(--gold)
+}
+
+.step-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem
 }
 
 .header-inner a,
