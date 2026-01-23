@@ -1,144 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>VillageVeggies - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="VillageVeggies, your source for fresh and organic vegetables grown by your neighbors."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <title>VillageVeggies - Check Local Plant Shop Inventory Online</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description"
-    content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence." />
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-
-<body>
-  <header class="header">
-    <div class="header-inner">
-      <a class="header-logo" href="/">VillageVeggies</a>
-    </div>
-  </header>
-
-  <main id="main">
-    <!-- Hero / CTA -->
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-content">
-          <h1>Get early access to VillageVeggies</h1>
-          <p class="hero-subtext">Join the beta waitlist — we'll notify you when the site is ready in your area.</p>
-          <form id="waitlist-form" class="waitlist-form" action="https://formspree.io/f/xgoaowbg" method="POST">
-
-            <label for="email">Join the waitlist</label>
-            <input type="email" id="email" name="email" placeholder="you@email.com" required />
-
-            <!-- Optional: segment who is signing up -->
-            <label for="type">I am a:</label>
-            <select id="type" name="type">
-              <option value="shop">Plant shop / nursery</option>
-              <option value="plant_lover">Plant lover</option>
-            </select>
-
-            <!-- Optional: location -->
-            <label for="location">City (optional)</label>
-            <input type="text" id="location" name="location" placeholder="Denver" />
-
-            <!-- Hidden tracking fields (UTM/source) -->
-            <input type="hidden" id="source" name="source" />
-            <input type="hidden" id="utm_campaign" name="utm_campaign" />
-            <input type="hidden" id="utm_medium" name="utm_medium" />
-            <input type="hidden" id="utm_content" name="utm_content" />
-
-            <!-- Honeypot (spam trap) -->
-            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
-
-            <button type="submit">Get early access</button>
-
-
-          </form>
-          <p class="form-note">We respect your privacy. We'll only use your email to send beta access information.</p>
-          <p id="waitlist-success" style="display:none;">
-            🌱 You’re on the list! We’ll email you when VillageVeggies launches in your area.
-          </p>
-
-        </div>
+  <body>
+    <header class="header">
+      <!-- <p>Site Header</p> -->
+      <div class="header-inner">
+        <a class="header-logo" href="/">VillageVeggies</a>
+        <nav aria-label="Primary">
+          <ul class="nav">
+            <li><a href="/auth.html">Login</a></li>
+            <li><a href="/funding.html">Support The Movement</a></li>
+          </ul>
+        </nav>
       </div>
-    </section>
-
-    <!-- How it works section -->
-    <section class="how-it-works">
-      <div class="how-it-works-inner">
-        <h2>How it works</h2>
-        <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-icon">🌱</div>
-            <h3>Shops post inventory</h3>
-            <p>Plant shops and nurseries update their available inventory online</p>
-          </div>
-          <div class="step-card">
-            <div class="step-icon">🔍</div>
-            <h3>Customers browse availability</h3>
-            <p>Check what's in stock before you visit the store</p>
-          </div>
-          <div class="step-card">
-            <div class="step-icon">✅</div>
-            <h3>Visit the store with confidence</h3>
-            <p>Know what's available and make your trip worthwhile</p>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-content">
+            <h1>Denver's Backyard Marketplace</h1>
+            <p>
+              Sell your homegrown food, Browse nearby items, Start a backyard
+              business!
+            </p>
+            <div class="hero-ctas">
+              <a href="/auth.html">Start Selling</a>
+              <a href="/auth.html">Browse</a>
+            </div>
           </div>
         </div>
-        <p class="scope-note">Sign up to be notified when VillageVeggies beta opens in your area.</p>
+      </section>
+
+      <section class="extra">
+        <div class="extra-inner">
+          <div class="extra-content">
+            <h1 class="extra-title">How it works</h1>
+            <div class="extra-grid-2">
+              <div class="extra-card-2">
+                <h3>Sell Food:</h3>
+                <ul>
+                  <li>1. Post your extra produce.</li>
+                  <li>2. Respond to local inquiries.</li>
+                  <li>3. Sell and Profit!</li>
+                </ul>
+              </div>
+              <div class="extra-card-2">
+                <h3>Buy Food:</h3>
+                <ul>
+                  <li>1. Browse Local produce.</li>
+                  <li>2. Reach out to growers.</li>
+                  <li>3. Picup and pay!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="support">
+        <div class="support-inner">
+          <div class="support-content">
+            <h1 class="support-title">Why pick VillageVeggies?</h1>
+            <div class="support-grid-3">
+              <div class="support-card-3">
+                <h3>Support Local</h3>
+                <p>Help your neighbors</p>
+              </div>
+              <div class="support-card-3">
+                <h3>Fresh Produce</h3>
+                <p>Get ripe produce from your neighbors</p>
+              </div>
+              <div class="support-card-3">
+                <h3>Community</h3>
+                <p>Build connections with local growers</p>
+              </div>
+            </div>
+            <div class="support-grid-3">
+              <div class="support-card-3">
+                <h3>Help the Environment</h3>
+                <p>Reduce greenhouse gasses</p>
+              </div>
+              <div class="support-card-3">
+                <h3>Boycot the Oligarcs</h3>
+                <p>Stop supporting billionairs</p>
+              </div>
+              <div class="support-card-3">
+                <h3>Start a Business</h3>
+                <p>Profit from a side business</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <small>© <span id="year"></span> VillageVeggies</small>
       </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <nav aria-label="Footer">
-      </nav>
-      <small>© <span id="year"></span> VillageVeggies</small>
-    </div>
-  </footer>
-</body>
-
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const form = document.getElementById("waitlist-form");
-  const success = document.getElementById("waitlist-success");
-  const setIfPresent = (id, key) => {
-    const val = params.get(key);
-    if (val) document.getElementById(id).value = val;
-  };
-  
-  // Common UTM params
-  setIfPresent("source", "utm_source");
-  setIfPresent("utm_campaign", "utm_campaign");
-  setIfPresent("utm_medium", "utm_medium");
-  setIfPresent("utm_content", "utm_content");
-
-  // If you want a fallback source param (e.g. ?source=instagram)
-  if (!document.getElementById("source").value) {
-    setIfPresent("source", "source");
-  }
-
-
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form);
-
-    const res = await fetch(form.action, {
-      method: "POST",
-      body: formData,
-      headers: { "Accept": "application/json" },
-    });
-
-    if (res.ok) {
-      form.reset();
-      form.style.display = "none";
-      success.style.display = "block";
-    } else {
-      alert("Something went wrong. Please try again.");
-    }
-  });
-</script>
-
-
+    </footer>
+    <script src="js/index.js" defer></script>
+  </body>
 </html>

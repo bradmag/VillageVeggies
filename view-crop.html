@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>VillageVeggies - View Crop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="View details for a local crop listing."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a class="header-logo" href="/index.html">VillageVeggies</a>
+        <nav aria-label="Primary">
+          <ul class="nav">
+            <li><a href="/profile.html">Profile</a></li>
+            <li><a href="/browse.html">Browse</a></li>
+            <li><a href="/auth.html" id="logout-link">Logout</a></li>
+            <li><a href="/funding.html">Support The Movement</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <!-- Error Message Section -->
+      <div id="error-message" class="view-crop-error" hidden>
+        <p>Crop ID is missing or invalid.</p>
+      </div>
+
+      <!-- Back Button -->
+      <div class="view-crop-back">
+        <a href="/browse.html" class="back-button">← Back to Browse</a>
+      </div>
+
+      <!-- Crop Information Section -->
+      <section class="view-crop-info" id="crop-info-section" hidden>
+        <div class="view-crop-info-inner">
+          <h1 id="crop-name" class="view-crop-title"></h1>
+          
+          <div class="view-crop-details">
+            <div class="view-crop-field">
+              <strong>Price:</strong>
+              <p id="crop-price"></p>
+            </div>
+
+            <div class="view-crop-field">
+              <strong>Quantity Available:</strong>
+              <p id="crop-quantity"></p>
+            </div>
+             
+            <div class="view-crop-field">
+              <strong>Harvest Date:</strong>
+              <p id="crop-harvest-date"></p>
+            </div>
+
+            <div class="view-crop-field">
+              <strong>ZIP Code:</strong>
+              <p id="crop-zip"></p>
+            </div>
+
+            <div class="view-crop-field">
+              <strong>Growing Method:</strong>
+              <p id="crop-growing-method"></p>
+            </div>
+            
+            <div class="view-crop-field">
+              <strong>Description:</strong>
+              <p id="crop-description"></p>
+            </div>
+            
+            <div class="view-crop-field">
+              <strong>Date Posted:</strong>
+              <p id="crop-date"></p>
+            </div>
+          </div>
+
+          <!-- Contact Grower Button -->
+          <div class="view-crop-contact-button-container">
+            <button id="contact-grower-button" class="contact-grower-button">
+              Contact Grower
+            </button>
+          </div>
+
+          <!-- Grower Information Section (Hidden Initially) -->
+          <div id="grower-info-section" class="view-crop-grower-info" hidden>
+            <h2 class="view-crop-grower-title">Grower Information</h2>
+            
+            <div class="view-crop-details">
+              <div class="view-crop-field">
+                <strong>Name:</strong>
+                <p id="grower-name"></p>
+              </div>
+              
+              <div class="view-crop-field">
+                <strong>Contact Info:</strong>
+                <p id="grower-contact"></p>
+              </div>
+              
+              <div class="view-crop-field">
+                <strong>ZIP Code:</strong>
+                <p id="grower-zip"></p>
+              </div>
+              
+              <div class="view-crop-field">
+                <strong>About:</strong>
+                <p id="grower-blurb"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <small>© <span id="year"></span> VillageVeggies</small>
+      </div>
+    </footer>
+    <script src="js/view-crop.js" defer></script>
+  </body>
+</html>
+

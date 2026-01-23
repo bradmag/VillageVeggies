@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>VillageVeggies - Browse Crops</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Browse fresh produce from local growers in your area."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a class="header-logo" href="/index.html">VillageVeggies</a>
+        <nav aria-label="Primary">
+          <ul class="nav">
+            <li><a href="/profile.html">Profile</a></li>
+            <li><a href="/auth.html" id="logout-link">Logout</a></li>
+            <li><a href="/funding.html">Support The Movement</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <!-- Title Section -->
+      <section class="browse-hero">
+        <div class="browse-hero-inner">
+          <h1>Browse Local Crops</h1>
+          <p class="browse-description">
+            Discover fresh produce from growers in your area. Click on any crop to see more details and contact the grower.
+          </p>
+        </div>
+      </section>
+
+      <!-- Crops Grid Section -->
+      <section class="browse-crops">
+        <div class="browse-crops-inner">
+            <input type="text" id="search-input" placeholder="Enter ZIP code">
+
+            <select id="search-type">
+              <option value="zip">Zip Code</option>
+              <option value="crop">Crop Name</option>
+            </select>
+
+            <div id="browse-crops-grid" class="crops-grid">
+              <!-- Crop cards will be inserted here by JS -->
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <small>© <span id="year"></span> VillageVeggies</small>
+      </div>
+    </footer>
+    <script src="js/browse.js" defer></script>
+  </body>
+</html>
+
