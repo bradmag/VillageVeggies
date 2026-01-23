@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>VillageVeggies - Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="VillageVeggies Profile, your user dashboard."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a class="header-logo" href="/index.html">VillageVeggies</a>
+        <nav aria-label="Primary">
+          <ul class="nav">
+            <li><a href="/browse.html">Browse</a></li>
+            <li><a href="/auth.html" id="logout-link">Logout</a></li>
+            <li><a href="/funding.html">Support The Movement</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <!-- Profile Information Section -->
+      <section class="profile">
+        <div class="profile-inner">
+          <div class="profile-content">
+            <h1>Profile Information</h1>
+            <div class="profile-field">
+              <strong>Name:</strong>
+              <p id="profile-name"></p>
+            </div>
+            <div class="profile-field">
+              <strong>Email:</strong>
+              <p id="profile-email"></p>
+            </div>
+            <div class="profile-field">
+              <strong>ZIP Code:</strong>
+              <p id="profile-zip"></p>
+            </div>
+            <div class="profile-field">
+              <strong>About Me:</strong>
+              <p id="profile-blurb"></p>
+            </div>
+            <div class="profile-field">
+              <strong>Contact Info:</strong>
+              <p id="profile-contact"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How the Marketplace Works Section -->
+      <section class="extra">
+        <div class="extra-inner">
+          <div class="extra-content">
+            <h1 class="extra-title">How the Marketplace Works</h1>
+            <div class="extra-grid-2">
+              <div class="extra-card-2">
+                <h3>Post leftover produce</h3>
+                <p>List your extra fruits, vegetables, and herbs for your neighbors to discover.</p>
+              </div>
+              <div class="extra-card-2">
+                <h3>Respond to messages from local buyers</h3>
+                <p>Connect with interested buyers in your area and arrange the details.</p>
+              </div>
+              <div class="extra-card-2">
+                <h3>Meet and exchange food locally</h3>
+                <p>Complete the transaction in person and build community connections.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Your Crops Dashboard Section -->
+      <section class="dashboard">
+        <div class="dashboard-inner">
+          <div class="dashboard-content">
+            <div class="dashboard-header">
+              <h1>Your Listings</h1>
+              <a href="/new-crop.html">Add Crop</a>
+            </div>
+            <div id="crops-grid" class="crops-grid">
+              <!-- Crop cards will be inserted here by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <small>© <span id="year"></span> VillageVeggies</small>
+      </div>
+    </footer>
+    <script src="js/profile.js" defer></script>
+  </body>
+</html>
