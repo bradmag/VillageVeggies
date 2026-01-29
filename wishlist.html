@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>VillageVeggies - Check Local Plant Shop Inventory Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a class="header-logo" href="/">VillageVeggies</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- Hero / CTA -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-content">
+            <h1>Get early access to VillageVeggies</h1>
+            <p class="hero-subtext">Join the beta waitlist — we'll notify you when the site is ready in your area.</p>
+
+            <form id="waitlist-form" class="waitlist-form" novalidate>
+              <label for="email" class="visually-hidden">Email address</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required class="email-input" />
+              <button type="submit" class="cta-primary submit-btn">Join the waitlist</button>
+            </form>
+
+            <p class="form-note">We respect your privacy. We'll only use your email to send beta access information.</p>
+
+            <p id="waitlist-success" class="success-message" aria-live="polite" style="display:none;">Thanks — you're on the list! We'll email you when beta access opens.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works section -->
+      <section class="how-it-works">
+        <div class="how-it-works-inner">
+          <h2>How it works</h2>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-icon">🌱</div>
+              <h3>Shops post inventory</h3>
+              <p>Plant shops and nurseries update their available inventory online</p>
+            </div>
+            <div class="step-card">
+              <div class="step-icon">🔍</div>
+              <h3>Customers browse availability</h3>
+              <p>Check what's in stock before you visit the store</p>
+            </div>
+            <div class="step-card">
+              <div class="step-icon">✅</div>
+              <h3>Visit the store with confidence</h3>
+              <p>Know what's available and make your trip worthwhile</p>
+            </div>
+          </div>
+          <p class="scope-note">Sign up to be notified when VillageVeggies beta opens in your area.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <nav aria-label="Footer">
+          <ul class="footer-nav">
+            <li><a href="/legal">Legal</a></li>
+            <li><a href="/funding">Funding</a></li>
+          </ul>
+        </nav>
+        <small>© <span id="year"></span> VillageVeggies</small>
+      </div>
+    </footer>
+    <script src="js/index.js" defer></script>
+    <script src="js/wishlist.js" defer></script>
+  </body>
+</html>
