@@ -1,44 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>VillageVeggies - Home</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence."
-    />
-    <link rel="stylesheet" href="css/styles.css" />
-  </head>
 
-  <body>
-    <header class="header">
-      <div class="header-inner">
-        <a class="header-logo" href="/">VillageVeggies</a>
-        <nav aria-label="Primary">
-          <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/login">Login</a></li>
-          </ul>
-        </nav>
+<head>
+  <meta charset="utf-8" />
+  <title>VillageVeggies - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence." />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a class="header-logo" href="/">VillageVeggies</a>
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="/login.html">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero page-hero">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <h1>VillageVeggies — Find local plant shops with confidence</h1>
+          <p class="hero-subtext">Browse nearby plant shops, see what they have in stock, and check when their inventory
+            was last updated. We make shop inventories simple and discoverable so you can visit with confidence.</p>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <main id="main">
-      <section class="home-section">
-        <div class="home-inner">
-          <h1 class="home-title">Welcome to VillageVeggies</h1>
-          <p>Your trusted partner for managing plant shop inventories in the Front Range area.</p>
-      
-    </main>
-
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <nav aria-label="Footer">
-        </nav>
-        <small>© <span id="year"></span> VillageVeggies</small>
+    <section id="shops" class="how-it-works content-section">
+      <div class="how-it-works-inner content-inner">
+        <h2>Local Plant Shops</h2>
+        <p class="scope-note">Showing featured shops — more shops available in your area.</p>
+        <div id="shops-grid" class="steps-grid cards-grid" aria-live="polite">
+          <!-- Shop cards will be injected here. Use `.step-card` styling for cards. -->
+        </div>
       </div>
-    </footer>
-    <!-- <script src="js/index.js" defer></script> -->
-  </body>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav aria-label="Footer">
+      </nav>
+      <small>© <span id="year"></span> VillageVeggies</small>
+    </div>
+  </footer>
+  <script src="/js/index.js" defer></script>
+</body>
+
 </html>

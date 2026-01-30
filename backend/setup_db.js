@@ -4,8 +4,9 @@
 const { Client } = require("pg");
 const bcrypt = require('bcrypt');
 
-// Load environment variables from .env during development if available
-try { require('dotenv').config(); } catch (e) {}
+// Load environment variables from backend/.env during development if available
+const path = require('path');
+try { require('dotenv').config({ path: path.join(__dirname, '.env') }); } catch (e) {}
 
 // Database connection info should come from environment variables.
 // Provide safe defaults for host/port/name/user, but DO NOT hardcode passwords here.
@@ -15,18 +16,27 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = process.env.DB_HOST || "127.0.0.1";
 const DB_PORT = Number(process.env.DB_PORT) || 5432;
 
-if (!DB_PASSWORD) {
-  console.error('Missing DB_PASSWORD environment variable. Create a backend/.env file or set DB_PASSWORD in your environment.');
+// Optional admin credentials (useful when creating the DB with a superuser)
+const ADMIN_DB_USER = process.env.ADMIN_DB_USER || null;
+const ADMIN_DB_PASSWORD = process.env.ADMIN_DB_PASSWORD || null;
+
+// Require at least one set of credentials to be present for setup (admin or DB user)
+if (!DB_PASSWORD && !ADMIN_DB_PASSWORD) {
+  console.error('Missing DB password. Set DB_PASSWORD for the application user or ADMIN_DB_PASSWORD for a superuser in backend/.env.');
   process.exit(1);
 }
 
 // Connect to the default 'postgres' database to create the new database if needed
 async function setupDatabase() {
+  // Use admin creds if provided (allows creating DB and roles), otherwise use app DB_USER creds
+  const adminUser = ADMIN_DB_USER || DB_USER;
+  const adminPass = ADMIN_DB_PASSWORD || DB_PASSWORD;
+
   const client = new Client({
-    user: DB_USER,
+    user: adminUser,
     host: DB_HOST,
     database: "postgres",
-    password: DB_PASSWORD,
+    password: adminPass,
     port: DB_PORT,
   });
 
@@ -41,6 +51,28 @@ async function setupDatabase() {
     console.log(`Database ${DB_NAME} created successfully.`);
   } else {
     console.log(`Database ${DB_NAME} already exists.`);
+  }
+
+  // Ensure the application role exists and own the database
+  try {
+    const safeRole = DB_USER.replace(/"/g, '');
+    const roleRes = await client.query('SELECT 1 FROM pg_roles WHERE rolname = $1', [safeRole]);
+    if (roleRes.rowCount === 0) {
+      if (!DB_PASSWORD) {
+        console.warn(`Application role ${safeRole} does not exist and DB_PASSWORD not provided; skipping role creation.`);
+      } else {
+        console.log(`Creating role ${safeRole}...`);
+        await client.query('CREATE ROLE "' + safeRole + '" WITH LOGIN PASSWORD $1', [DB_PASSWORD]);
+      }
+    }
+    // Try to change database owner to the app role (may fail if not permitted)
+    try {
+      await client.query('ALTER DATABASE "' + DB_NAME.replace(/"/g, '') + '" OWNER TO "' + safeRole + '"');
+    } catch (e) {
+      // non-fatal
+    }
+  } catch (e) {
+    // best-effort; continue
   }
 
   await client.end();
@@ -75,6 +107,7 @@ async function createTables() {
         password_hash VARCHAR(255),
         name VARCHAR(255) NOT NULL,
         location VARCHAR(255) NOT NULL,
+        inventory_updated_at TIMESTAMP DEFAULT NOW(),
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
@@ -146,11 +179,11 @@ async function seedData() {
 
     const shopResult = await client.query(
       `INSERT INTO shops (email, password_hash, name, location) VALUES ($1, $2, $3, $4) RETURNING id`,
-      ["test@shop.local", hashed, "Test Plant Shop", "Denver, CO"]
+      ["seed@shop.local", hashed, "Seed Plant Shop", "Denver, CO"]
     );
 
     const shopId = shopResult.rows[0].id;
-    console.log(`Test shop created with ID: ${shopId} (email: test@shop.local password: ${testPassword})`);
+    console.log(`Test shop created with ID: ${shopId} (email: seed@shop.local password: ${testPassword})`);
 
     // Insert 5 inventory items
     const inventoryItems = [

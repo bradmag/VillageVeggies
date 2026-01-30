@@ -4,8 +4,13 @@ const session = require('express-session');
 const app = express();
 const path = require('path');
 
-// Load .env in development if present (optional dependency)
-try { require('dotenv').config(); } catch (e) {}
+// Load backend/.env in development if present (optional dependency)
+try { require('dotenv').config({ path: path.join(__dirname, '.env') }); } catch (e) {}
+
+// Serve the shop template for any shop URL (e.g. /shop/123.html)
+app.get('/shop/:shopId.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'shop.html'));
+});
 
 app.use(express.static(path.join(__dirname, '..')));
 
@@ -205,6 +210,21 @@ app.get('/api/shops/:shopId/inventory', async (req, res) => {
     } catch (err) {
         console.error('Error fetching inventory:', err);
         return res.status(500).json({ error: 'Failed to fetch inventory' });
+    }
+});
+
+// Public index endpoint: list shops for the homepage
+app.get('/api/index/shops', async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT id, name, location, inventory_updated_at
+             FROM shops
+             ORDER BY name ASC`
+        );
+        res.json(result.rows || []);
+    } catch (err) {
+        console.error('Error fetching index shops:', err);
+        res.status(500).json({ error: 'Failed to fetch shops' });
     }
 });
 

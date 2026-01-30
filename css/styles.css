@@ -146,6 +146,46 @@ main {
     flex-wrap: wrap;
 }
 
+/* Shared page layout utilities for hero + content sections */
+.page-hero {
+    /* compact hero used on detail pages */
+    background: transparent;
+    padding: 1.5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.page-hero .hero-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+}
+
+.content-section {
+    /* generic content section that pages can reuse */
+    background: var(--light-mint);
+    padding: 2rem 0 3rem;
+}
+
+.content-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.card {
+    padding: 1.25rem;
+    background: var(--nyanza);
+    border-radius: 12px;
+    border: 2px solid var(--gold);
+}
+
 .cta-primary,
 .cta-secondary {
     display: inline-block;

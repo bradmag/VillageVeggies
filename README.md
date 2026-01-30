@@ -135,7 +135,7 @@ Admin
 Index
 - GET /api/index/shops
 
-Shop (authenticated)
+Dashboard (authenticated)
 - GET /api/dashboard/items
 - POST /api/dashboard/inventory/items
 - PATCH /api/dashboard/inventory/items/:itemId
