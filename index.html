@@ -54,6 +54,11 @@
 
           </form>
           <p class="form-note">We respect your privacy. We'll only use your email to send beta access information.</p>
+          <p style="font-size: 0.9rem;">
+            By joining the waitlist, you agree to our
+            <a href="privacy.html">Privacy Policy</a>.
+          </p>
+
           <p id="waitlist-success" style="display:none;">
             🌱 You’re on the list! We’ll email you when VillageVeggies launches in your area.
           </p>
@@ -83,7 +88,6 @@
             <p>Know what's available and make your trip worthwhile</p>
           </div>
         </div>
-        <p class="scope-note">Sign up to be notified when VillageVeggies beta opens in your area.</p>
       </div>
     </section>
   </main>
@@ -105,7 +109,7 @@
     const val = params.get(key);
     if (val) document.getElementById(id).value = val;
   };
-  
+
   // Common UTM params
   setIfPresent("source", "utm_source");
   setIfPresent("utm_campaign", "utm_campaign");
