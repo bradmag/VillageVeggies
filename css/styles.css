@@ -42,6 +42,7 @@ main {
     display: block;
 }
 
+/* Start Header / Footer Section */
 .header {
     position: sticky;
     top: 0;
@@ -100,15 +101,28 @@ main {
     outline-offset: 2px;
 }
 
-/* Container utilities */
-.how-it-works-inner,
+.footer {
+    background: var(--celadon);
+    border-top: 2px solid var(--gold);
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
 .footer-inner {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
-/* Hero Section */
+.footer small {
+    color: var(--dartmouth-green);
+}
+
+/* End Header / Footer Section Start Hero Section */
 .hero {
     padding: 3rem 1.5rem;
     display: flex;
@@ -124,6 +138,12 @@ main {
     border: 3px solid var(--gold);
     box-shadow: 0 4px 12px rgba(27, 67, 50, 0.08);
     width: 100%;
+}
+
+.founder-story p {
+    margin-bottom: 1.2rem;
+    text-indent: 1.5em;
+
 }
 
 .hero-content {
@@ -163,144 +183,73 @@ main {
     flex-wrap: wrap;
 }
 
-/* Shared page layout utilities for hero + content sections */
-.page-hero {
-    background: var(--nyanza);
-    padding: 2rem 1.5rem;
-    display: flex;
-    align-items: center;
+/* End Hero Section Start List Section */
+.list {
+    padding: 2rem 1.25rem;
 }
 
-.page-hero .hero-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    width: 100%;
-    background: var(--light-mint);
-    border-radius: 12px;
-    border: 3px solid var(--gold);
-    box-shadow: 0 4px 12px rgba(27, 67, 50, 0.08);
-}
-
-.content-section {
-    /* generic content section that pages can reuse */
-    background: var(--light-mint);
-    padding: 2rem 0 3rem;
-}
-
-.content-inner {
+.list-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.25rem;
-}
-
-.card {
-    padding: 1.25rem;
-    background: var(--nyanza);
-    border-radius: 12px;
-    border: 2px solid var(--gold);
-}
-
-.cta-primary,
-.cta-secondary {
-    display: inline-block;
-    padding: 0.875rem 2rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-}
-
-.cta-primary {
-    background: var(--sea-green);
-    color: var(--white);
-    border-color: var(--sea-green);
-}
-
-.cta-primary:hover,
-.cta-primary:focus {
-    background: var(--dartmouth-green);
-    border-color: var(--dartmouth-green);
-    outline: 3px solid var(--mint);
-    outline-offset: 2px;
-}
-
-.cta-secondary {
-    background: var(--white);
-    color: var(--sea-green);
-    border-color: var(--sea-green);
-}
-
-.cta-secondary:hover,
-.cta-secondary:focus {
-    background: var(--light-mint);
-    outline: 3px solid var(--mint);
-    outline-offset: 2px;
-}
-
-/* Shop page: smaller hero and inventory area */
-.shop-hero {
-    background: var(--nyanza);
-    padding: 2rem 1.5rem;
-}
-
-.shop-hero-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--light-mint);
-    border-radius: 12px;
-    border: 3px solid var(--gold);
-    box-shadow: 0 4px 12px rgba(27, 67, 50, 0.08);
-}
-
-.shop-content {
-    text-align: center;
-    max-width: 720px;
-}
-
-.shop-content h1 {
-    font-size: 1.5rem;
-    color: var(--brunswick-green);
-    margin-bottom: 0.25rem;
-}
-
-.shop-meta {
-    color: var(--dartmouth-green);
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
-}
-
-.inventory-section {
-    background: var(--light-mint);
-    padding: 2rem 0 4rem;
-}
-
-.inventory-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
-}
-
-.inventory-inner h2 {
+.list-content h2 {
     font-size: 1.75rem;
     color: var(--brunswick-green);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
-/* Waitlist form styles */
+.list-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem 1.5rem;
+    /* Make each row take equal available height so cards match */
+    grid-auto-rows: 1fr;
+}
+
+.list-card{
+    background: var(--nyanza);
+    border-radius: 10px;
+    border: 2px solid var(--gold);
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(27,67,50,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    /* let the card fill the full grid area for equal heights */
+    height: 100%;
+    align-items: stretch;
+}
+
+.list-card h3 {
+    font-size: 1.05rem;
+    color: var(--brunswick-green);
+    margin: 0;
+    text-align: center;
+}
+
+.list-card p {
+    color: var(--dartmouth-green);
+    margin: 0.25rem 0 0;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Accessibility: ensure the grid stacks on narrow viewports (grid handles this naturally) */
+@media (max-width: 480px) {
+    .list {
+        padding: 1rem 0.75rem;
+    }
+    .list-card{
+        padding: 0.85rem;
+    }
+}
+
+
+
+/* End List Section Start Waitlist Section */
 .waitlist-form {
     display: flex;
     gap: 0.5rem;
@@ -341,20 +290,6 @@ main {
     overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; 
 }
 
-/* How it works section */
-.how-it-works {
-    padding: 4rem 0;
-    background: var(--white);
-}
-
-.how-it-works h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--brunswick-green);
-    text-align: center;
-    margin-bottom: 2.5rem;
-}
-
 .steps-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -362,29 +297,9 @@ main {
     margin-bottom: 2rem;
 }
 
-.step-card {
-    text-align: center;
-    padding: 2rem 1.5rem;
-    background: var(--nyanza);
-    border-radius: 12px;
-    border: 2px solid var(--gold);
-}
-
 .step-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-}
-
-.step-card h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--brunswick-green);
-    margin-bottom: 0.75rem;
-}
-
-.step-card p {
-    color: var(--dartmouth-green);
-    line-height: 1.6;
 }
 
 .scope-note {
@@ -400,45 +315,7 @@ main {
     width: fit-content;
 }
 
-/* Footer */
-.site-footer {
-    background: var(--celadon);
-    border-top: 2px solid var(--gold);
-    padding: 2rem 0;
-    margin-top: auto;
-}
 
-.footer-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
-
-.footer-nav {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-}
-
-.footer-nav a {
-    color: var(--brunswick-green);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.footer-nav a:hover,
-.footer-nav a:focus {
-    text-decoration: underline;
-    outline: 2px solid var(--sea-green);
-    outline-offset: 2px;
-    border-radius: 4px;
-}
-
-.site-footer small {
-    color: var(--dartmouth-green);
-}
 
 .auth-container {
   background-color: var(--nyanza);
@@ -577,26 +454,12 @@ main {
         width: 100%;
         text-align: center;
     }
-
-    .how-it-works {
-        padding: 3rem 0;
-    }
-
-    .how-it-works h2 {
-        font-size: 1.75rem;
-    }
-
     .steps-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
 
-    .step-card {
-        padding: 1.5rem 1rem;
-    }
-
     .hero-inner,
-    .how-it-works-inner,
     .footer-inner {
         padding: 1rem;
     }

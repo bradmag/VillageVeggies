@@ -1,59 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>VillageVeggies - Shop Inventory</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence."
-    />
-    <link rel="stylesheet" href="/css/styles.css" />
-  </head>
 
-  <body>
-    <header class="header">
-      <div class="header-inner">
-        <a class="header-logo" href="/">VillageVeggies</a>
-        <nav aria-label="Primary">
-          <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/login.html">Login</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+<head>
+  <meta charset="utf-8" />
+  <title>VillageVeggies - Shop Inventory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence." />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
 
-    <main id="main">
-      <section class="hero">
-        <div class="hero-inner">
-          <div class="shop-content">
-            <h1 id="shop-name">Plant Shop Name</h1>
-            <p class="shop-meta" id="shop-address">123 Green St, Town</p>
-            <p class="shop-meta" id="shop-updated">Inventory last updated: <time datetime="">—</time></p>
-          </div>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a class="header-logo" href="/">VillageVeggies</a>
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="/login.html">Login</a></li>
+          <li><a href="/funding.html">Support The Movement</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <h1 id="shop-name">Plant Shop Name</h1>
+          <p class="shop-meta" id="shop-address">123 Green St, Town</p>
+          <p class="shop-meta" id="shop-updated">Inventory last updated: <time datetime="">—</time></p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <div class="scope-note" aria-hidden="false">Note: Additional items are available in-store; shown here are showcase or most popular items.</div>
+    <div class="scope-note" aria-hidden="false">Note: Additional items are available in-store; shown here are showcase
+      or most popular items.</div>
 
-      <section class="content-section inventory-section">
-        <div class="content-inner inventory-inner">
+    <section class="list">
+      <div class="list-inner">
+        <div class="list-content">
           <h2>Inventory</h2>
-          <div id="inventory-grid" class="steps-grid cards-grid" aria-live="polite">
-            <!-- Plant cards will be injected here by the inventory API. -->
+          <div id="inventory-grid" class="list-grid" aria-live="polite">
+            <!-- Plant cards will be injected here. Use `.list-card` styling for cards. -->
           </div>
         </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <nav aria-label="Footer">
-        </nav>
-        <small>© <span id="year"></span> VillageVeggies</small>
       </div>
-    </footer>
-    <script src="/js/shop.js" defer></script>
-  </body>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <small>© <span id="year"></span> VillageVeggies</small>
+    </div>
+  </footer>
+  <script src="/js/shop.js" defer></script>
+</body>
+
 </html>

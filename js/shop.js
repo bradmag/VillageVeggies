@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (const it of items) {
       const card = document.createElement('div');
-      card.className = 'step-card';
+      card.className = 'list-card';
 
       const title = document.createElement('h3');
       title.textContent = it.name || it.title || 'Plant';

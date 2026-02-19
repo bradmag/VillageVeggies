@@ -31,7 +31,7 @@ function renderShops(container, shops) {
     }
     for (const s of shops) {
         const card = document.createElement('article');
-        card.className = 'step-card';
+        card.className = 'list-card';
 
         const title = document.createElement('h3');
         const link = document.createElement('a');
