@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt');
 
 // Load environment variables from backend/.env during development if available
 const path = require('path');
-try { require('dotenv').config({ path: path.join(__dirname, '.env') }); } catch (e) {}
+try { require('dotenv').config({ path: path.join(__dirname, '.env') }); } catch (e) {console.log(e);}
+
 
 // Database connection info should come from environment variables.
 // Provide safe defaults for host/port/name/user, but DO NOT hardcode passwords here.

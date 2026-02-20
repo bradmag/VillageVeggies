@@ -12,6 +12,10 @@ app.get('/shop/:shopId.html', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'shop.html'));
 });
 
+app.get('/company-item.html', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "company-item.html"));
+});
+
 app.use(express.static(path.join(__dirname, '..')));
 
 app.use(express.json());
@@ -42,7 +46,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
     user: process.env.DB_USER || 'villageveggies_dev',
     host: process.env.DB_HOST || '127.0.0.1',
-    database: process.env.DB_NAME || 'villageveggies',
+    database: "villageveggies",
     password: process.env.DB_PASSWORD,
     port: Number(process.env.DB_PORT) || 5432,
 });
@@ -228,3 +232,87 @@ app.get('/api/index/shops', async (req, res) => {
     }
 });
 
+
+// Company Items APIs
+app.get("/api/inventory", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT * FROM inventory_items ORDER BY id ASC"
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
+app.post("/api/inventory/add", async (req, res) => {
+    const { name, availability, quantity, price_range } = req.body;
+
+    if (!name || availability === undefined || quantity === undefined || !price_range) {
+        return res.status(400).json({ error: "All fields are required and must be valid. "});
+    }
+    try {
+        const result = await pool.query(
+            `INSERT INTO inventory_items (shop_id, name, availability, quantity, price_range, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+             RETURNING *`,
+             [1, name, availability, quantity, price_range]
+        );
+        console.log("insert result: ", result.rows[0]);
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("Error adding inventory item:", err);
+        res.status(500).json({ error: "Failed to add item" });
+    }
+})
+
+app.patch("/api/inventory/update/:id", async (req, res) => {
+    
+    const itemId = req.params.id;
+    const { name, availability, quantity, price_range } = req.body;
+
+    try {
+        const result = await pool.query(
+            `UPDATE inventory_items
+             SET name = $1,
+                 availability = $2,
+                 quantity = $3,
+                 price_range = $4,
+                 updated_at = NOW()
+             WHERE id = $5
+             RETURNING *`,
+            [name, availability, quantity, price_range, itemId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Item not found" });
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error("Error updating inventory item:", err);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
+app.delete("/api/inventory/:id", async (req, res) => {
+    
+    const itemId = req.params.id; 
+
+    try {
+        const result = await pool.query(
+            "DELETE FROM inventory_items WHERE id = $1 RETURNING *",
+            [itemId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Item not found. "});
+        }
+        res.status(200).json({ message: "Item deleted", item: result.rows[0] });
+
+    } catch (err) {
+        console.error("Error deleting inventory item:", err);
+        res.status(500).json({ error: "Database error "});
+    }
+})
