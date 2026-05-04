@@ -1,8 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const session = require('express-session');
 const app = express();
 const path = require('path');
+const { EmailClient } = require('@azure/communication-email');
 
 // Load backend/.env in development if present (optional dependency)
 try { require('dotenv').config({ path: path.join(__dirname, '.env') }); } catch (e) {}
@@ -56,6 +58,18 @@ pool.on('error', (err, client) => {
     console.error('Unexpected error on idle client', err);
     process.exit(-1);
 });
+
+// ACS email helper
+async function sendEmail(to, subject, htmlBody) {
+    const client = new EmailClient(process.env.ACS_CONNECTION_STRING);
+    const message = {
+        senderAddress: process.env.ACS_SENDER_EMAIL,
+        recipients: { to: [{ address: to }] },
+        content: { subject, html: htmlBody }
+    };
+    const poller = await client.beginSend(message);
+    await poller.pollUntilDone();
+}
 
 // Register endpoint (creates a shop account)
 app.post('/auth/register', async (req, res) => {
@@ -210,6 +224,122 @@ app.get('/api/shops/:shopId/inventory', async (req, res) => {
     } catch (err) {
         console.error('Error fetching inventory:', err);
         return res.status(500).json({ error: 'Failed to fetch inventory' });
+    }
+});
+
+// POST /auth/forgot-password — always returns generic 200 to prevent email enumeration
+app.post('/auth/forgot-password', async (req, res) => {
+    const genericResponse = { message: "If that email is registered, you'll receive a reset link." };
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required.' });
+    }
+
+    // Always respond generically; internal errors are swallowed silently
+    try {
+        const shopResult = await pool.query('SELECT id, email FROM shops WHERE email = $1 LIMIT 1', [email]);
+        if (shopResult.rows.length === 0) {
+            return res.status(200).json(genericResponse);
+        }
+
+        const shop = shopResult.rows[0];
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+        await pool.query(
+            'INSERT INTO password_reset_tokens (shop_id, token, expires_at) VALUES ($1, $2, $3)',
+            [shop.id, token, expiresAt]
+        );
+
+        const resetLink = `${process.env.APP_BASE_URL}/reset-password.html?token=${token}`;
+        const htmlBody = `
+            <p>You requested a password reset for your VillageVeggies account.</p>
+            <p><a href="${resetLink}">Click here to reset your password</a></p>
+            <p>This link expires in 1 hour. If you did not request this, you can ignore this email.</p>
+        `;
+
+        await sendEmail(shop.email, 'VillageVeggies — Reset your password', htmlBody);
+    } catch (err) {
+        console.error('Error in forgot-password flow:', err);
+        // Fall through — still return generic 200
+    }
+
+    return res.status(200).json(genericResponse);
+});
+
+// GET /auth/reset-password/:token — validate token before showing the form
+app.get('/auth/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    try {
+        const result = await pool.query(
+            `SELECT id FROM password_reset_tokens
+             WHERE token = $1 AND used = FALSE AND expires_at > NOW()`,
+            [token]
+        );
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: 'This reset link is invalid or has expired.' });
+        }
+        return res.status(200).json({ valid: true });
+    } catch (err) {
+        console.error('Error validating reset token:', err);
+        return res.status(500).json({ error: 'Failed to validate token.' });
+    }
+});
+
+// POST /auth/reset-password/:token — apply new password
+// Known limitation: existing sessions for the shop are NOT invalidated because sessions are in-memory.
+app.post('/auth/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+
+    if (!newPassword || !confirmPassword) {
+        return res.status(400).json({ error: 'Both password fields are required.' });
+    }
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ error: 'Passwords do not match.' });
+    }
+
+    const client = await pool.connect();
+    try {
+        const tokenResult = await client.query(
+            `SELECT id, shop_id FROM password_reset_tokens
+             WHERE token = $1 AND used = FALSE AND expires_at > NOW()`,
+            [token]
+        );
+        if (tokenResult.rows.length === 0) {
+            return res.status(400).json({ error: 'This reset link is invalid or has expired.' });
+        }
+
+        const { id: tokenId, shop_id: shopId } = tokenResult.rows[0];
+        const passwordHash = await bcrypt.hash(newPassword, 10);
+
+        await client.query('BEGIN');
+        await client.query('UPDATE shops SET password_hash = $1 WHERE id = $2', [passwordHash, shopId]);
+        await client.query('UPDATE password_reset_tokens SET used = TRUE WHERE id = $1', [tokenId]);
+        await client.query('COMMIT');
+
+        // Send confirmation email (fire-and-forget; don't block response on failure)
+        try {
+            const shopResult = await pool.query('SELECT email FROM shops WHERE id = $1', [shopId]);
+            if (shopResult.rows.length > 0) {
+                await sendEmail(
+                    shopResult.rows[0].email,
+                    'VillageVeggies — Password changed',
+                    '<p>Your VillageVeggies password was just changed. If this was not you, please contact support immediately.</p>'
+                );
+            }
+        } catch (emailErr) {
+            console.error('Failed to send password-change confirmation email:', emailErr);
+        }
+
+        return res.status(200).json({ message: 'Password updated successfully.' });
+    } catch (err) {
+        await client.query('ROLLBACK').catch(() => {});
+        console.error('Error resetting password:', err);
+        return res.status(500).json({ error: 'Failed to reset password.' });
+    } finally {
+        client.release();
     }
 });
 

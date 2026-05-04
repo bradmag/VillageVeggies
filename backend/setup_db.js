@@ -133,6 +133,19 @@ async function createTables() {
       ON inventory_items(shop_id);
     `);
 
+    // --- PASSWORD RESET TOKENS TABLE ---
+    await client.query(`DROP TABLE IF EXISTS password_reset_tokens CASCADE`);
+    await client.query(`
+      CREATE TABLE password_reset_tokens (
+        id SERIAL PRIMARY KEY,
+        shop_id INT NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
+        token VARCHAR(255) NOT NULL UNIQUE,
+        expires_at TIMESTAMP NOT NULL,
+        used BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
     // --- SESSIONS TABLE (for connect-pg-simple) ---
     await client.query(`DROP TABLE IF EXISTS session CASCADE`);
     await client.query(`
