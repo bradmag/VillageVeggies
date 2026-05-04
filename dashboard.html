@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="VillageVeggies helps Front Range plant shops keep a simple online inventory so customers can visit with confidence."
+      content="Manage your VillageVeggies shop profile and inventory."
     />
     <link rel="stylesheet" href="/css/styles.css" />
   </head>
@@ -14,35 +14,75 @@
   <body>
     <header class="header">
       <div class="header-inner">
-        <a class="header-logo" href="/">VillageVeggies</a>
-        <nav aria-label="Primary">
-          <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/login">Login</a></li>
-          </ul>
-        </nav>
+        <a class="header-logo" href="/index.html">VillageVeggies</a>
       </div>
     </header>
 
     <main id="main">
+      <div class="dashboard-layout">
 
-      <section class="dashboard-section content-section">
-        <div class="dashboard-inner content-inner">
-          <h1 class="dashboard-title">User Dashboard</h1>
-          <p>Welcome to your dashboard. Here you can view your activities and manage your profile.</p>
-          <!-- Additional dashboard functionalities can be added here -->
-        </div>
-      </section>
-      
+        <!-- Section 1: Shop Details -->
+        <section class="dashboard-card" id="shop-details-section" aria-labelledby="shop-name">
+          <div class="dashboard-card-header">
+            <div class="shop-meta">
+              <h2 id="shop-name">Loading...</h2>
+              <p id="shop-location"></p>
+            </div>
+            <button id="sign-out-btn" class="btn-sign-out">Sign Out</button>
+          </div>
+        </section>
+
+        <!-- Section 2: Inventory -->
+        <section class="dashboard-card" id="inventory-section" aria-labelledby="inventory-heading">
+          <div class="dashboard-card-header">
+            <h2 id="inventory-heading">Inventory</h2>
+            <button id="add-item-btn" class="btn-sign-out">+ Add Item</button>
+          </div>
+          <div id="inventory-grid" class="inventory-grid" role="list"></div>
+          <p id="inventory-empty" hidden>No inventory items yet. Click "+ Add Item" to get started.</p>
+        </section>
+
+        <!-- Section 3: Edit Item (hidden until a plant is selected) -->
+        <section class="dashboard-card" id="edit-section" aria-labelledby="edit-heading" hidden>
+          <div class="dashboard-card-header">
+            <h2 id="edit-heading">Edit Item</h2>
+            <button id="close-edit-btn" class="btn-close" aria-label="Close edit panel">✕</button>
+          </div>
+          <form id="editForm" class="auth-form">
+            <div class="form-group" id="name-field-group">
+              <label for="edit-name">Plant Name</label>
+              <input type="text" id="edit-name" name="name" placeholder="e.g. Monstera Deliciosa" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-price">Price Range</label>
+              <input type="text" id="edit-price" name="price_range" placeholder="e.g. $10 – $20" />
+            </div>
+            <div class="form-group">
+              <label for="edit-quantity">Quantity</label>
+              <input type="number" id="edit-quantity" name="quantity" min="0" />
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="edit-availability" name="availability" />
+                In Stock
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="auth-button">Save Changes</button>
+              <button type="button" id="delete-item-btn" class="btn-danger">Delete Item</button>
+            </div>
+            <p id="edit-message" class="edit-message" aria-live="polite"></p>
+          </form>
+        </section>
+
+      </div>
     </main>
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <nav aria-label="Footer">
-        </nav>
         <small>© <span id="year"></span> VillageVeggies</small>
       </div>
     </footer>
-    <!-- <script src="/js/index.js" defer></script> -->
+    <script src="/js/dashboard.js" defer></script>
   </body>
 </html>

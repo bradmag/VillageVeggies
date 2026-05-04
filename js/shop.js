@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderShop(shop = {}, items = []) {
     shopNameEl.textContent = shop.name || 'Plant Shop';
-    shopAddressEl.textContent = shop.address || '';
-    const updated = shop.updatedAt || shop.lastUpdated || shop.inventoryUpdated;
+    shopAddressEl.textContent = shop.location || shop.address || '';
+    const updated = shop.inventoryUpdated || shop.updatedAt || shop.lastUpdated;
     if (updated) {
       const d = new Date(updated);
       if (!isNaN(d)) {
@@ -58,19 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     for (const it of items) {
+      const priceText = it.price_range ? (it.price_range.startsWith('$') ? it.price_range : `$${it.price_range}`) : null;
+      const price = priceText ? `<p class="item-price">${escapeHtml(priceText)}</p>` : '';
+      const qty = it.quantity != null ? `<p class="item-qty">Qty: ${it.quantity}</p>` : '';
+
       const card = document.createElement('div');
       card.className = 'list-card';
-
-      const title = document.createElement('h3');
-      title.textContent = it.name || it.title || 'Plant';
-      card.appendChild(title);
-
-      if (it.shortDescription || it.description) {
-        const p = document.createElement('p');
-        p.textContent = it.shortDescription || it.description;
-        card.appendChild(p);
-      }
-
+      card.innerHTML = `
+        <h3>${escapeHtml(it.name || 'Plant')}</h3>
+        ${price}
+        ${qty}
+      `;
       inventoryGrid.appendChild(card);
     }
   }

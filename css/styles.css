@@ -237,6 +237,20 @@ main {
     text-align: center;
 }
 
+.list-card .item-price {
+    font-weight: 600;
+    color: var(--sea-green);
+}
+
+.list-card .item-qty {
+    font-size: 0.875rem;
+    color: var(--dartmouth-green);
+}
+
+.out-of-stock-card {
+    opacity: 0.6;
+}
+
 /* Accessibility: ensure the grid stacks on narrow viewports (grid handles this naturally) */
 @media (max-width: 480px) {
     .list {
@@ -428,6 +442,183 @@ main {
   font-size: 0.95rem;
 }
 
+
+/* ---- Dashboard ---- */
+.dashboard-layout {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.dashboard-card {
+    background: var(--nyanza);
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.dashboard-card h2 {
+    font-size: 1.4rem;
+    color: var(--brunswick-green);
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.shop-meta p {
+    color: var(--dartmouth-green);
+    margin-top: 0.25rem;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.inventory-card {
+    background: var(--white);
+    border: 2px solid var(--celadon);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.inventory-card:hover {
+    border-color: var(--sea-green);
+    box-shadow: 0 2px 8px rgba(27, 67, 50, 0.12);
+}
+
+.inventory-card.selected {
+    border-color: var(--sea-green);
+    background: var(--light-mint);
+    box-shadow: 0 2px 8px rgba(27, 67, 50, 0.2);
+}
+
+.inventory-card h3 {
+    font-size: 0.95rem;
+    color: var(--brunswick-green);
+    margin-bottom: 0.35rem;
+}
+
+.inventory-card .item-price {
+    font-size: 0.875rem;
+    color: var(--sea-green);
+    font-weight: 600;
+}
+
+.inventory-card .item-qty {
+    font-size: 0.8rem;
+    color: var(--dartmouth-green);
+    margin-top: 0.2rem;
+}
+
+.stock-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-top: 0.4rem;
+}
+
+.stock-badge.in-stock {
+    background: var(--celadon);
+    color: var(--dartmouth-green);
+}
+
+.stock-badge.out-of-stock {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+.btn-sign-out {
+    background: none;
+    border: 2px solid var(--sea-green);
+    color: var(--sea-green);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.btn-sign-out:hover {
+    background: var(--sea-green);
+    color: var(--white);
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--dartmouth-green);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.btn-close:hover {
+    color: var(--dark-green);
+    background: var(--celadon);
+}
+
+.btn-danger {
+    background: none;
+    border: 2px solid #dc2626;
+    color: #dc2626;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    color: var(--white);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--dark-green);
+}
+
+.edit-message {
+    font-size: 0.9rem;
+    min-height: 1.2em;
+}
+
+.error {
+    color: #991b1b;
+    font-size: 0.9rem;
+}
+
+.success {
+    color: var(--sea-green);
+    font-size: 0.9rem;
+}
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {

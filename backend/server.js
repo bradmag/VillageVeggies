@@ -343,6 +343,101 @@ app.post('/auth/reset-password/:token', async (req, res) => {
     }
 });
 
+// ---- Auth middleware ----
+function requireAuth(req, res, next) {
+    if (!req.session || !req.session.shopId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    next();
+}
+
+// GET /api/dashboard/profile — returns the logged-in shop's profile
+app.get('/api/dashboard/profile', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT id, name, location, email FROM shops WHERE id = $1',
+            [req.session.shopId]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Shop not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error fetching profile:', err);
+        res.status(500).json({ error: 'Failed to fetch profile' });
+    }
+});
+
+// GET /api/dashboard/inventory/items — returns all items for the logged-in shop
+app.get('/api/dashboard/inventory/items', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT id, name, availability, quantity, price_range, created_at, updated_at
+             FROM inventory_items WHERE shop_id = $1 ORDER BY created_at ASC`,
+            [req.session.shopId]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching inventory:', err);
+        res.status(500).json({ error: 'Failed to fetch inventory' });
+    }
+});
+
+// POST /api/dashboard/inventory/items — adds a new inventory item
+app.post('/api/dashboard/inventory/items', requireAuth, async (req, res) => {
+    const { name, price_range, quantity, availability } = req.body;
+    if (!name) return res.status(400).send('Item name is required');
+    try {
+        const result = await pool.query(
+            `INSERT INTO inventory_items (shop_id, name, price_range, quantity, availability)
+             VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+            [req.session.shopId, name, price_range || null, quantity != null ? quantity : null, availability ?? true]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error adding item:', err);
+        res.status(500).send('Failed to add item');
+    }
+});
+
+// PATCH /api/dashboard/inventory/items/:itemId — updates an inventory item
+app.patch('/api/dashboard/inventory/items/:itemId', requireAuth, async (req, res) => {
+    const itemId = parseInt(req.params.itemId, 10);
+    const { name, price_range, quantity, availability } = req.body;
+    try {
+        const result = await pool.query(
+            `UPDATE inventory_items
+             SET name = COALESCE($1, name),
+                 price_range = $2,
+                 quantity = $3,
+                 availability = $4,
+                 updated_at = NOW()
+             WHERE id = $5 AND shop_id = $6
+             RETURNING *`,
+            [name || null, price_range || null, quantity != null ? quantity : null, availability ?? true, itemId, req.session.shopId]
+        );
+        if (result.rows.length === 0) return res.status(404).send('Item not found');
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error updating item:', err);
+        res.status(500).send('Failed to update item');
+    }
+});
+
+// DELETE /api/dashboard/inventory/items/:itemId — removes an inventory item
+app.delete('/api/dashboard/inventory/items/:itemId', requireAuth, async (req, res) => {
+    const itemId = parseInt(req.params.itemId, 10);
+    try {
+        const result = await pool.query(
+            'DELETE FROM inventory_items WHERE id = $1 AND shop_id = $2 RETURNING id',
+            [itemId, req.session.shopId]
+        );
+        if (result.rows.length === 0) return res.status(404).send('Item not found');
+        res.status(204).end();
+    } catch (err) {
+        console.error('Error deleting item:', err);
+        res.status(500).send('Failed to delete item');
+    }
+});
+
 // Public index endpoint: list shops for the homepage
 app.get('/api/index/shops', async (req, res) => {
     try {
